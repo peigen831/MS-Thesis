@@ -17,31 +17,7 @@ public class JsoupCrawler {
 	final static String moodURL = "http://mm.rappler.com/moodmeter/ranking?rsort=1&content_id=";
 	final static String dirStorage = "src/article/";
 
-	public void writeArticle(String filepath, String html){
-		FileWriter fw;
-		boolean alreadyExists = new File(filepath).exists();
-		
-		if(alreadyExists){
-			File file = new File(filepath);
-			try {
-				Files.deleteIfExists(file.toPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		try {
-			fw = new FileWriter(filepath, true);
-			fw.write(html);
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public Document readArticle(){
-		return null;
-	}
+
 	
 	public Document fetchHTML(int articleID){
 		try {
