@@ -1,5 +1,7 @@
 package helper;
 
+import java.util.ArrayList;
+
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,18 +18,18 @@ public class NewsInterpreter {
 	final static String mood_afraid = "afraid";
 	final static String mood_annoyed = "annoyed";
 	
-	public String getContent(Document doc){
-		String result = "";
+	public ArrayList<String> getContent(Document doc){
+		ArrayList<String> arrParagraph = new ArrayList<String>();
 		
 		Element element = doc.select("div.storypage-divider").first();
 		
 		Elements eParagraph = element.select("p:not([^])");
 		
 		for(Element e: eParagraph){
-	        result += e.text() + "\n";
+	        arrParagraph.add(e.text());
 		}
 		
-		return result;
+		return arrParagraph;
 	}
 	
 	public String getCategory(Document doc){

@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 import org.jsoup.nodes.Document;
 
 import helper.IO;
@@ -17,7 +19,21 @@ public class Driver {
 		
 		NewsInterpreter interpreter = new NewsInterpreter();
 		
-		System.out.println(interpreter.getContent(doc));
+		ArrayList<String> arrParagraph = interpreter.getContent(doc);
+		
+		for(String s: arrParagraph)
+		{
+//			System.out.println(s);
+			Lemmatizer l = Lemmatizer.getInstance();
+			ArrayList<String> arr = l.lemmatize(s);
+			System.out.println(s);
+			for(String a : arr)
+				System.out.print(a + " ");
+			System.out.println();
+//			sentence split for each paragraph
+			
+		}
+			
 	}
 
 }

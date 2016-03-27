@@ -1,10 +1,12 @@
 package helper;
 
-import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 
 import org.jsoup.Jsoup;
@@ -24,6 +26,18 @@ public class IO {
 				e.printStackTrace();
 			}
 		}
+		
+		// TODO TO TEST - write in UTF8 format 
+//		Writer out;
+//		try {
+//			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "UTF-8"));
+//		    out.write(html);
+//		    out.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} finally {
+//		}
 		
 		try {
 			fw = new FileWriter(filepath, true);

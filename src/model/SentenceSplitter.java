@@ -1,10 +1,34 @@
 package model;
 
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.ling.Sentence;
+import edu.stanford.nlp.process.DocumentPreprocessor;
+
 public class SentenceSplitter {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public ArrayList<String> splitSentence(String paragraph){
+		
+//		String P = "My 1st sentence. “Does it work for questions?” My third sentence.";
+		String P = "This is a test? This is a T.L.A. test! Now with a Dr. in it.";
+		Reader reader = new StringReader(P);
+		DocumentPreprocessor dp = new DocumentPreprocessor(reader);
+		ArrayList<String> sentenceList = new ArrayList<String>();
 
+		for (List<HasWord> sentence : dp) {
+		   String sentenceString = Sentence.listToString(sentence);
+		   sentenceList.add(sentenceString.toString());
+		}
+		
+		return sentenceList;
 	}
-
+	
+	public static void main(String args[]){
+		new SentenceSplitter().splitSentence("");
+	}
+	
 }
