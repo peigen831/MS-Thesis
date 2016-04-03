@@ -1,6 +1,13 @@
 package model;
 
 public class Preprocessor {
+	
+	public void generateCleanArticle(int articleID){
+
+
+//		String sMood = crawler.fetchMoodJSON(i);
+		
+	}
 
 	public static void main(String[] args) {
 		

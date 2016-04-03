@@ -98,9 +98,7 @@ public class SenticModel {
 			i++;
 		}
 	}
-	
 
-	
 	public static void main(String args[]){
 		SenticModel model = new SenticModel();
 		model.loadConcept();

@@ -7,7 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class NewsInterpreter {
+public class HTMLInterpreter {
 	final static String moods = "moods";
 	final static String mood_happy = "happy";
 	final static String mood_sad = "sad";
@@ -18,7 +18,7 @@ public class NewsInterpreter {
 	final static String mood_afraid = "afraid";
 	final static String mood_annoyed = "annoyed";
 	
-	public ArrayList<String> getContent(Document doc){
+	public ArrayList<String> getBody(Document doc){
 		ArrayList<String> arrParagraph = new ArrayList<String>();
 		
 		Element element = doc.select("div.storypage-divider").first();
@@ -32,6 +32,18 @@ public class NewsInterpreter {
 		return arrParagraph;
 	}
 	
+	public String getBodyAsString(Document doc){
+		
+		ArrayList<String> arrContent = this.getBody(doc);
+		
+		String result = "";
+		
+		for(String s: arrContent)
+			result += (s + "\n");
+		
+		return result;
+	}
+	
 	public String getCategory(Document doc){
 		return doc.baseUri().split("/")[3];
 	}
@@ -40,6 +52,21 @@ public class NewsInterpreter {
 		JSONObject obj = new JSONObject(json);
 		int mVal = obj.getJSONObject(moods).getInt(mood);
 		return mVal;
+	}
+	
+	public String formatAllMood(String allMood){
+		String s = "";
+		
+		s += (mood_happy + "," + getMoodValue(allMood,mood_happy)) + " ";
+		s += (mood_sad + "," + getMoodValue(allMood,mood_sad)) + " ";
+		s += (mood_inspired + "," + getMoodValue(allMood,mood_inspired)) + " ";
+		s += (mood_dontcare + "," + getMoodValue(allMood,mood_dontcare)) + " ";
+		s += (mood_angry + "," + getMoodValue(allMood,mood_angry)) + " ";
+		s += (mood_afraid + "," + getMoodValue(allMood,mood_afraid)) + " ";
+		s += (mood_amused + "," + getMoodValue(allMood,mood_amused)) + " ";
+		s += (mood_annoyed + "," + getMoodValue(allMood,mood_annoyed));
+
+		return s;
 	}
 	
 	public void printAllMoods(String Mood){
