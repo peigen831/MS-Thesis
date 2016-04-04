@@ -1,4 +1,4 @@
-package helper;
+package crawler;
 
 public class RapplerNews {
 	private int id;

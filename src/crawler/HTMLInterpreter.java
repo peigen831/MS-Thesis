@@ -1,4 +1,4 @@
-package helper;
+package crawler;
 
 import java.util.ArrayList;
 
@@ -9,14 +9,14 @@ import org.jsoup.select.Elements;
 
 public class HTMLInterpreter {
 	final static String moods = "moods";
-	final static String mood_happy = "happy";
-	final static String mood_sad = "sad";
-	final static String mood_inspired = "inspired";
-	final static String mood_dontcare = "dont_care";
-	final static String mood_angry = "angry";
-	final static String mood_amused = "amused";
-	final static String mood_afraid = "afraid";
-	final static String mood_annoyed = "annoyed";
+	public final static String mood_happy = "happy";
+	public final static String mood_sad = "sad";
+	public final static String mood_inspired = "inspired";
+	public final static String mood_dontcare = "dont_care";
+	public final static String mood_angry = "angry";
+	public final static String mood_amused = "amused";
+	public final static String mood_afraid = "afraid";
+	public final static String mood_annoyed = "annoyed";
 	
 	public ArrayList<String> getBody(Document doc){
 		ArrayList<String> arrParagraph = new ArrayList<String>();

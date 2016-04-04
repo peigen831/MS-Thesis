@@ -1,4 +1,4 @@
-package model;
+package rappler;
 
 public class Preprocessor {
 	

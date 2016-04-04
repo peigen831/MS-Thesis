@@ -1,3 +1,6 @@
 /target/
 /bin/
 /lib/
+/src/article/
+/src/raw/
+/src/processed/

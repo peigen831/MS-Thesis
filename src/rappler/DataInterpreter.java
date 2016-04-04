@@ -1,5 +1,7 @@
-package model;
+package rappler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class DataInterpreter {
@@ -10,6 +12,10 @@ public class DataInterpreter {
 		this.rawText = rawText;
 	}
 	
+	public DataInterpreter() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void setRawText(String rawText){
 		this.rawText = rawText;
 	}
@@ -37,6 +43,16 @@ public class DataInterpreter {
 				result += arrS[i] + "\n";
 		}
 		return result;
+	}
+	
+	public String[] getBodyAsArr(){
+		String[] arrS = rawText.split("\n");
+		ArrayList<String> result  = new ArrayList<String>();
+		for(int i = 3; i < arrS.length; i++){
+			if(!arrS[i].trim().equals(""))
+				result.add(arrS[i]);
+		}
+		return result.toArray(new String[0]);
 	}
 	
 	public String getUrl(){
