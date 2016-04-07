@@ -42,6 +42,10 @@ public class SenticModel {
 		loadConcept();
 	}
 	
+	public SenticConcept[] getSenticConcept(){
+		return this.arrConcept;
+	}
+	
 	
 	public Model getModel(){
         InputStream in = FileManager.get().open(modelPath);

@@ -1,87 +1,35 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import crawler.JsoupCrawler;
-import helper.IO;
-import rappler.DataInterpreter;
-import rappler.Lemmatizer;
-import rappler.SentenceSplitter;
+import rappler.EmotionAnalyzer;
 
 public class ModelController {
 	
-	private IO io = new IO();
 	
-	private DataInterpreter interpreter = new DataInterpreter();
 	
-	private SentenceSplitter splitter = new SentenceSplitter();
-	
-	private String[] body;
-	
-	private SenticModel model = new SenticModel();
-	
-	public HashMap<String, Integer> computeEmotionFreq(String articleID){
-		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
-		
-		String linedText = io.readText(JsoupCrawler.dirProcessed + articleID);
-		
-		interpreter.setRawText(linedText);
-		
-		body = interpreter.getBodyAsArr();
-
-		ArrayList<String> arrSplitted = new ArrayList<String>();
-		
-		int match = 0;
-		int notMatch = 0;
-		
-		for(String s1: body)
-		{
-			arrSplitted = splitter.splitSentence(s1);
-			
-			for(String s2: arrSplitted)
-			{
-//				System.out.println(s2);
-				Lemmatizer l = Lemmatizer.getInstance();
-				ArrayList<String> arr = l.lemmatize(s2);
-				for(String lemma : arr)
-				{
-					//if match increment counter
-					String[] senticVal = model.getSenticValue(lemma);
-					if(senticVal != null){
-						match++;
-						for(String emotion: senticVal){
-							int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
-							emoMap.put(emotion, count + 1);
-						}
-					}
-					else
-						notMatch++;
-				}
-				//correlate with sentic concept
-				System.out.println("Match: "+ match + " Not match: " + notMatch);
-			}
-		}
-		return emoMap;
-	}
-	
-	public void printMap(HashMap<String, Integer> map){
-
-		for (Map.Entry<String,Integer> entry : map.entrySet()) {
-		  String key = entry.getKey();
-		  int value = entry.getValue();
-		  System.out.println(key + ": " + value);
-		  // do stuff
-		}
-	}
 
 	public static void main(String[] args) {
-		ModelController control = new ModelController();
+		EmotionAnalyzer analyzer = new EmotionAnalyzer();
 		
-		HashMap<String, Integer> emoMap = control.computeEmotionFreq("81000");
+		String articleID = "81007";
 		
-		control.printMap(emoMap);
+		HashMap<String, Integer> emoMap = analyzer.computeEmotionFreq(articleID);
+		
+		HashMap<String, Float> percentMap = analyzer.getMapPercentage(emoMap);
+		
+		String result = analyzer.interpreter.floatMapAsString(percentMap);
+		
+		HashMap<String, Integer> oriMap = analyzer.interpreter.getMood();
+		
+		String rappler = analyzer.interpreter.intMapAsString(oriMap);
+		
+		System.out.println(rappler);
+		System.out.println(result);
+		
+		
+		//TODO change article ID 
+//		IO.getInstance().writeFile(IO.dirResult + articleID, rappler+result);
 		
 		
 //		IO io = new IO();

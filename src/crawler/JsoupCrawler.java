@@ -11,8 +11,7 @@ public class JsoupCrawler {
 	
 	public final static String baseURL = "http://www.rappler.com/";
 	public final static String moodURL = "http://mm.rappler.com/moodmeter/ranking?rsort=1&content_id=";
-	public final static String dirRaw = "src/raw/";
-	public final static String dirProcessed = "src/processed/";
+
 	int initialID;
 	int nArticle;
 
@@ -26,9 +25,10 @@ public class JsoupCrawler {
 		try {
 			return Jsoup.connect(baseURL+articleID).get();
 		} catch (IOException e) {
+
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 	
 	public String fetchMoodJSON(int articleID){
@@ -54,25 +54,32 @@ public class JsoupCrawler {
 		}			
 	}
 	
+	public void printDocument(int articleID){
+		Document doc = this.fetchHTML(articleID);
+		System.out.println(interpreter.getBodyAsString(doc));
+	}
+	
 	public void startCrawl(int articleID){
 		Document docContent = this.fetchHTML(articleID);
-		//Todo filter if URL contains indonesia or no articleID or video
-		//Todo filter if file contains video
+		//TODO filter if URL contains indonesia or no articleID or video
+		//TODO filter if file contains video
+		//TODO filter no emotion article
 		
-		String sAllmood = this.fetchMoodJSON(articleID);
-		sAllmood = interpreter.formatAllMood(sAllmood);
-		//TODO write formated format
-		String sFormat = "";
-		sFormat += docContent.baseUri() + "\n";
-		sFormat += docContent.title() + "\n";
-//		sFormat += interpreter.getCategory(docContent); //where to save
-		sFormat += sAllmood + "\n";
-		sFormat += interpreter.getBodyAsString(docContent);
-		
-		
-		io.writeArticle(dirProcessed + articleID, sFormat);
-		io.writeArticle(dirRaw + articleID, docContent.html());
-		System.out.println("Done write: " + articleID);
+		if(docContent != null)
+		{
+			String sAllmood = this.fetchMoodJSON(articleID);
+			sAllmood = interpreter.formatAllMood(sAllmood);
+			String sFormat = "";
+			sFormat += docContent.baseUri() + "\n";
+			sFormat += docContent.title() + "\n";
+//			sFormat += interpreter.getCategory(docContent); //where to save
+			sFormat += sAllmood + "\n";
+			sFormat += interpreter.getBodyAsString(docContent);
+			
+			io.writeFile(IO.dirProcessed + articleID, sFormat);
+			io.writeFile(IO.dirRaw + articleID, docContent.html());
+			System.out.println("Done write: " + articleID);
+		}
 	}
 	
 

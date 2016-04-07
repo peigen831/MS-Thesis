@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 
 import org.jsoup.Jsoup;
@@ -15,9 +16,28 @@ import org.jsoup.nodes.Document;
 
 import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import rappler.Lemmatizer;
+
 public class IO {
 	
-	public void writeArticle(String filepath, String html){
+	//TODO change directory
+	public final static String dirRaw = "raw/";
+	public final static String dirProcessed = "processed/";
+	public final static String dirResult = "analyzeResult/";
+	public final static String charset16 = "UTF-16";
+	public final static String charset8 = "UTF-8";
+	
+	private static IO instance = null;
+	
+	public static IO getInstance(){
+		if(instance == null)
+			instance = new IO();
+		return instance;
+	}
+	
+	public void writeFile(String filepath, String html){
+		//TODO fix writing format
 		boolean alreadyExists = new File(filepath).exists();
 		
 		if(alreadyExists){
@@ -29,14 +49,12 @@ public class IO {
 			}
 		}
 		
-		// TODO TO TEST - write in UTF8 format 
 		Writer out;
 		try {
-			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), "UTF-8"));
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), Charset.forName(IO.charset8)));
 		    out.write(html);
 		    out.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 		}
@@ -50,11 +68,11 @@ public class IO {
 //		}
 	}
 	
-	public Document readDocument(String filepath) {		
+	public Document readFile(String filepath) {		
 		File input = new File(filepath);
 		Document doc = null;
 		try {
-			doc = Jsoup.parse(input, "UTF-8", "");
+			doc = Jsoup.parse(input, IO.charset8, "");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
