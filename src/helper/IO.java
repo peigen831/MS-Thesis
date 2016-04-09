@@ -16,8 +16,8 @@ import org.jsoup.nodes.Document;
 
 import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 
+import dataprocessor.Lemmatizer;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import rappler.Lemmatizer;
 
 public class IO {
 	

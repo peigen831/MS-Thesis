@@ -1,4 +1,4 @@
-package rappler;
+package dataprocessor;
 
 import java.io.Reader;
 import java.io.StringReader;

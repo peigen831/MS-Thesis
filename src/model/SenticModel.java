@@ -30,6 +30,37 @@ public class SenticModel {
 	public static final String api_aptitude = "apiaptitude";
 	public static final String api_attention = "apiattention";
 	public static final String api_sensitivity = "apisensitivity";
+	
+	
+	public static final String NA = "N/A";
+	
+	public static final String pleasantness_ecstacy = "ecstacy";
+	public static final String pleasantness_joy = "joy";
+	public static final String pleasantness_serenity = "serenity";
+	public static final String pleasantness_pensiveness = "pensiveness";
+	public static final String pleasantness_sadness = "sadness";
+	public static final String pleasantness_grief = "grief";
+	
+	public static final String attention_vigilance = "vigilance";
+	public static final String attention_anticipation = "anticipation";
+	public static final String attention_interest = "interest";
+	public static final String attention_distraction = "distraction";
+	public static final String attention_surprise = "surprise";
+	public static final String attention_amazement = "amazement";
+	
+	public static final String sensitivity_rage = "rage";
+	public static final String sensitivity_anger = "anger";
+	public static final String sensitivity_annoyance = "annoyance";
+	public static final String sensitivity_apprehension = "apprehension";
+	public static final String sensitivity_fear = "fear";
+	public static final String sensitivity_terror = "terror";
+	
+	public static final String aptitude_admiration = "admiration";
+	public static final String aptitude_trust = "trust";
+	public static final String aptitude_acceptance = "acceptance";
+	public static final String aptitude_boredom = "boredom";
+	public static final String aptitude_disgust = "disgust";
+	public static final String aptitude_loathing = "loathing";
 	 
 	private String modelPath = "senticnet3.rdf.xml";
 	private SenticConcept[] arrConcept = new SenticConcept[30000];
@@ -85,36 +116,104 @@ public class SenticModel {
 	}
 	
 	public String computePleasantness(float val){
-		if(val > 0)
-			return HTMLInterpreter.mood_happy;
-		else if (val < 0)
-			return HTMLInterpreter.mood_sad;
-		return null;
-	}
-	
+		if(val > (float)(2.0 /3))
+			return SenticModel.pleasantness_ecstacy;
+		else if (val > (float)(1.0 /3) && val <= (float)(2.0 /3))
+			return SenticModel.pleasantness_joy;
+		else if (val > (float)(0.0) && val <= (float)(1.0 /3))
+			return SenticModel.pleasantness_serenity;
+		else if (val >= (float)-(1.0/ 3) && val < (float)(0.0))
+			return SenticModel.pleasantness_pensiveness;
+		else if (val >= (float)-(2.0 /3) && val < (float)-(1.0 /3))
+			return SenticModel.pleasantness_sadness;
+		else if(val < (float)-(2.0 /3))
+			return SenticModel.pleasantness_grief;
+		else
+			return SenticModel.NA;
+}
+
 	public String computeAttention(float val){
+		if(val > (float)(2.0 /3))
+			return SenticModel.attention_vigilance;
+		else if (val > (float)(1.0 /3) && val <= (float)(2.0 /3))
+			return SenticModel.attention_anticipation;
+		else if (val > (float)(0.0) && val <= (float)(1.0 /3))
+			return SenticModel.attention_interest;
+		else if (val >= (float)-(1.0/ 3) && val < (float)(0.0))
+			return SenticModel.attention_distraction;
+		else if (val >= (float)-(2.0 /3) && val < (float)-(1.0 /3))
+			return SenticModel.attention_surprise;
+		else if(val < (float)-(2.0 /3))
+			return SenticModel.attention_amazement;
+		else
+			return SenticModel.NA;
+}
+
+	public String computeSensitivity(float val){
+		if(val > (float)(2.0 /3))
+			return SenticModel.sensitivity_rage;
+		else if (val > (float)(1.0 /3) && val <= (float)(2.0 /3))
+			return SenticModel.sensitivity_anger;
+		else if (val > (float)(0.0) && val <= (float)(1.0 /3))
+			return SenticModel.sensitivity_annoyance;
+		else if (val >= (float)-(1.0/ 3) && val < (float)(0.0))
+			return SenticModel.sensitivity_apprehension;
+		else if (val >= (float)-(2.0 /3) && val < (float)-(1.0 /3))
+			return SenticModel.sensitivity_fear;
+		else if(val < (float)-(2.0 /3))
+			return SenticModel.sensitivity_terror;
+		else
+			return SenticModel.NA;
+}
+
+	public String computeAptitude(float val){
+		if(val > (float)(2.0 /3))
+			return SenticModel.aptitude_admiration;
+		else if (val > (float)(1.0 /3) && val <= (float)(2.0 /3))
+			return SenticModel.aptitude_trust;
+		else if (val > (float)(0.0) && val <= (float)(1.0 /3))
+			return SenticModel.aptitude_acceptance;
+		else if (val >= (float)-(1.0/ 3) && val < (float)(0.0))
+			return SenticModel.aptitude_boredom;
+		else if (val >= (float)-(2.0 /3) && val < (float)-(1.0 /3))
+			return SenticModel.aptitude_disgust;
+		else if(val < (float)-(2.0 /3))
+			return SenticModel.aptitude_loathing;
+		else
+			return SenticModel.NA;
+}
+	
+//	public String computePleasantness(float val){
 //		if(val > 0)
 //			return HTMLInterpreter.mood_happy;
-		if (val < 0)
-			return HTMLInterpreter.mood_amused;
-		return null;
-	}
-	
-	public String computeSensitivity(float val){
-		if(val > (1.0/3))
-			return HTMLInterpreter.mood_angry;
-		else if (val >= -(1.0/3) && val <= (1.0/3) && val!=0)
-			return HTMLInterpreter.mood_annoyed;
-		else if (val < -(1.0/3))
-			return HTMLInterpreter.mood_afraid;
-		return null;
-	}
-	
-	public String computeAptitude(float val){
-		if (val < 0)
-			return HTMLInterpreter.mood_dontcare;
-		return null;
-	}
+//		else if (val < 0)
+//			return HTMLInterpreter.mood_sad;
+//		return null;
+//	}
+//	
+//	public String computeAttention(float val){
+////		if(val > 0)
+////			return HTMLInterpreter.mood_happy;
+//		if (val < 0)
+//			return HTMLInterpreter.mood_amused;
+//		return null;
+//	}
+//	
+//	public String computeSensitivity(float val){
+//		if(val > (1.0/3))
+//			return HTMLInterpreter.mood_angry;
+//		else if (val >= -(1.0/3) && val <= (1.0/3) && val!=0)
+//			return HTMLInterpreter.mood_annoyed;
+//		else if (val < -(1.0/3))
+//			return HTMLInterpreter.mood_afraid;
+//		return null;
+//	}
+//	
+//	public String computeAptitude(float val){
+//		if (val < 0)
+//			return HTMLInterpreter.mood_dontcare;
+//		return null;
+//	}
 	
 	public void loadConcept(){
 		Model model = getModel();
@@ -167,16 +266,18 @@ public class SenticModel {
 
 	public static void main(String args[]){
 		SenticModel model = new SenticModel();
-		float a = (float) 0.33;
-		float b = (float) -0.33;
-		float c = (float) 0.67;
-		float d = (float) -0.67;
-		float e = 0;
+		float a = (float) 0.99; //ecstacy
+		float b = (float) (1.0/3); //serenity
+		float c = (float) (1.5/3); //joy
+		float d = (float) (0); //na
+		float e = (float) -(1.0 /3); //pensiveness
+		float f = (float) -(2.5 /3); //grief
 		
-		System.out.println(model.computeSensitivity(a));
-		System.out.println(model.computeSensitivity(b));
-		System.out.println(model.computeSensitivity(c));
-		System.out.println(model.computeSensitivity(d));
-		System.out.println(model.computeSensitivity(e));
+		System.out.println(model.computePleasantness(a));
+		System.out.println(model.computePleasantness(b));
+		System.out.println(model.computePleasantness(c));
+		System.out.println(model.computePleasantness(d));
+		System.out.println(model.computePleasantness(e));
+		System.out.println(model.computePleasantness(f));
 	}
 }

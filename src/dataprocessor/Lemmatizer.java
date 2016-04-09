@@ -1,4 +1,4 @@
-package rappler;
+package dataprocessor;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

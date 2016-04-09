@@ -2,7 +2,7 @@ package model;
 
 import java.util.HashMap;
 
-import rappler.EmotionAnalyzer;
+import dataprocessor.EmotionAnalyzer;
 
 public class ModelController {
 	
