@@ -1,9 +1,12 @@
-package model;
+package Sentic;
 
 import java.util.ArrayList;
 
-public class SenticConcept {
+public class Concept {
+
+	private int frequency = 0;
 	private String concept;
+	
 	private String description;
 	private float pleasantness;
 	private float attention;
@@ -14,6 +17,15 @@ public class SenticConcept {
 	private ArrayList<String> semantics = new ArrayList<String>();
 	
 	
+	public int getfrequency() {
+		return frequency;
+	}
+	public void setfrequency(int nFreq) {
+		this.frequency = nFreq;
+	}
+	public void setSemantics(ArrayList<String> semantics) {
+		this.semantics = semantics;
+	}
 	public String getConcept() {
 		return concept;
 	}
@@ -78,7 +90,7 @@ public class SenticConcept {
 	}
 	
 	public static void main(String args[]){
-		SenticConcept c=  new SenticConcept();
+		Concept c=  new Concept();
 		c.checkComplete();
 	}
 }

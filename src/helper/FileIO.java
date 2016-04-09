@@ -19,7 +19,7 @@ import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 import dataprocessor.Lemmatizer;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
-public class IO {
+public class FileIO {
 	
 	//TODO change directory
 	public final static String dirRaw = "raw/";
@@ -28,11 +28,11 @@ public class IO {
 	public final static String charset16 = "UTF-16";
 	public final static String charset8 = "UTF-8";
 	
-	private static IO instance = null;
+	private static FileIO instance = null;
 	
-	public static IO getInstance(){
+	public static FileIO getInstance(){
 		if(instance == null)
-			instance = new IO();
+			instance = new FileIO();
 		return instance;
 	}
 	
@@ -51,7 +51,7 @@ public class IO {
 		
 		Writer out;
 		try {
-			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), Charset.forName(IO.charset8)));
+			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), Charset.forName(FileIO.charset8)));
 		    out.write(html);
 		    out.close();
 		} catch (IOException e) {
@@ -72,7 +72,7 @@ public class IO {
 		File input = new File(filepath);
 		Document doc = null;
 		try {
-			doc = Jsoup.parse(input, IO.charset8, "");
+			doc = Jsoup.parse(input, FileIO.charset8, "");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

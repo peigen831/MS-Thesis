@@ -2,7 +2,7 @@ package crawler;
 
 import org.jsoup.nodes.Document;
 
-import helper.IO;
+import helper.FileIO;
 
 public class CrawlDriver {
 
@@ -22,7 +22,7 @@ public class CrawlDriver {
 //		crawler.setCrawlRange(initialID, range);
 //		
 //		crawler.startCrawl();
-		Document doc = IO.getInstance().readFile(IO.dirRaw+initialID);
+		Document doc = FileIO.getInstance().readFile(FileIO.dirRaw+initialID);
 		
 		HTMLInterpreter i = new HTMLInterpreter();
 		

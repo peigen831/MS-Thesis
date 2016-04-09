@@ -1,4 +1,4 @@
-package model;
+package Sentic;
 
 import java.util.HashMap;
 
@@ -6,26 +6,23 @@ import dataprocessor.EmotionAnalyzer;
 
 public class ModelController {
 	
-	
-	
-
 	public static void main(String[] args) {
 		EmotionAnalyzer analyzer = new EmotionAnalyzer();
 		
 		String articleID = "81007";
 		
-		HashMap<String, Integer> emoMap = analyzer.computeEmotionFreq(articleID);
+//		HashMap<String, Integer> emoMap = analyzer.computeEmotionFreq(articleID);
 		
-		HashMap<String, Float> percentMap = analyzer.getMapPercentage(emoMap);
+//		HashMap<String, Float> percentMap = analyzer.getMapPercentage(emoMap);
 		
-		String result = analyzer.interpreter.floatMapAsString(percentMap);
+//		String result = analyzer.interpreter.floatMapAsString(percentMap);
 		
 		HashMap<String, Integer> oriMap = analyzer.interpreter.getMood();
 		
 		String rappler = analyzer.interpreter.intMapAsString(oriMap);
 		
 		System.out.println(rappler);
-		System.out.println(result);
+//		System.out.println(result);
 		
 		
 		//TODO change article ID 

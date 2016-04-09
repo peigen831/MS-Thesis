@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import helper.IO;
+import helper.FileIO;
 
 public class JsoupCrawler {
 	
@@ -15,7 +15,7 @@ public class JsoupCrawler {
 	int initialID;
 	int nArticle;
 
-	IO io = new IO();
+	FileIO io = new FileIO();
 	HTMLInterpreter interpreter = new HTMLInterpreter();
 	
 	//TODO get 10000 article
@@ -76,8 +76,8 @@ public class JsoupCrawler {
 			sFormat += sAllmood + "\n";
 			sFormat += interpreter.getBodyAsString(docContent);
 			
-			io.writeFile(IO.dirProcessed + articleID, sFormat);
-			io.writeFile(IO.dirRaw + articleID, docContent.html());
+			io.writeFile(FileIO.dirProcessed + articleID, sFormat);
+			io.writeFile(FileIO.dirRaw + articleID, docContent.html());
 			System.out.println("Done write: " + articleID);
 		}
 	}

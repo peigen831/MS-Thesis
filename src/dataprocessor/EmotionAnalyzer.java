@@ -4,118 +4,172 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import helper.IO;
-import model.SenticConcept;
-import model.SenticModel;
+import Sentic.Concept;
+import Sentic.ConceptLoader;
+import Sentic.SenticConstant;
+import helper.FileIO;
+import helper.PrintIO;
 
 public class EmotionAnalyzer {
-	private IO io = new IO();
+	private FileIO io = new FileIO();
 	
 	public DataInterpreter interpreter = new DataInterpreter();
 	
 	private SentenceSplitter splitter = new SentenceSplitter();
 	
-	private SenticModel model = new SenticModel();
+	private ConceptLoader loader = new ConceptLoader();
+	
+	Concept[] senticConcept;
+	
 	
 	public HashMap<String, Integer> computeEmotionFreq(String articleID){
 
 		HashMap<String, Integer>  emoMap;
-		String linedText = io.readText(IO.dirProcessed + articleID);
+		String linedText = io.readText(FileIO.dirProcessed + articleID);
 		interpreter.setRawText(linedText);
 		String[] body = interpreter.getBodyAsArr();
 		
-		emoMap = basicApproach(body);
+//		emoMap = conceptBasedApproach(body);
 		
-		return emoMap;
+		return null;
 	}
-	
-	public HashMap<String, Integer> basicApproach(String[] body){
-		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
-		
-		ArrayList<String> sentenceSplitted = new ArrayList<String>();
-
-		int match = 0;
-		int notMatch = 0;
-		for(String s1: body)
-		{
-			sentenceSplitted = splitter.splitSentence(s1);
-			
-			for(String s2: sentenceSplitted)
-			{
-				Lemmatizer l = Lemmatizer.getInstance();
-				ArrayList<String> sTokenized = l.lemmatize(s2);
-				for(String lemma : sTokenized)
-				{
-					String[] senticVal = model.getSenticValue(lemma);
-					if(senticVal != null){
-						match++;
-						for(String emotion: senticVal){
-							int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
-							emoMap.put(emotion, count + 1);
-						}
-					}
-					else
-						notMatch++;
-				}
-			}
-		}
-		System.out.println("Match: "+ match + " Not match: " + notMatch);
-		return emoMap;
-	}
-	
-	
-	public HashMap<String, Integer> conceptBasedApproach(String[] body){
-		
-		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
-		
-		ArrayList<String> sentenceSplitted = new ArrayList<String>();
-
-		SenticConcept[] senticConcept = new SenticModel().getSenticConcept();
-		
-		int match = 0;
-		int notMatch = 0;
-		for(String s1: body)
-		{
-			sentenceSplitted = splitter.splitSentence(s1);
-			
-			for(String s2: sentenceSplitted)
-			{
-				Lemmatizer l = Lemmatizer.getInstance();
-				ArrayList<String> sTokenized = l.lemmatize(s2);
-				
-				for(SenticConcept concept: senticConcept){
-					String[] wordFromConcept = concept.getConcept().split("\\s+");
-					
-					for(String word: wordFromConcept){
-						
-						for(String lemma: sTokenized){
-							//if the current word doesnt match all the lemma, break the concept
-						}
-						
-					}
-				}
-				
+//	
+//	public HashMap<String, Integer> basicApproach(String[] body){
+//		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
+//		
+//		ArrayList<String> sentenceSplitted = new ArrayList<String>();
+//
+//		int match = 0;
+//		int notMatch = 0;
+//		for(String s1: body)
+//		{
+//			sentenceSplitted = splitter.splitSentence(s1);
+//			
+//			for(String s2: sentenceSplitted)
+//			{
+//				Lemmatizer l = Lemmatizer.getInstance();
+//				ArrayList<String> sTokenized = l.lemmatize(s2);
 //				for(String lemma : sTokenized)
 //				{
 //					String[] senticVal = model.getSenticValue(lemma);
-//					if(senticVal != null)
-//					{
+//					if(senticVal != null){
 //						match++;
-//						for(String emotion: senticVal)
-//						{
+//						for(String emotion: senticVal){
 //							int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
 //							emoMap.put(emotion, count + 1);
 //						}
 //					}
-//					
 //					else
 //						notMatch++;
 //				}
+//			}
+//		}
+//		System.out.println("Match: "+ match + " Not match: " + notMatch);
+//		return emoMap;
+//	}
+	
+	//return present sentic concepts
+	//string - emotional dimension
+	//arrList - list of concepts with corresponding freq count
+	public HashMap<String, ArrayList<Concept>> getDimensionConcept(String[] paragraph){
+		
+		HashMap<String, ArrayList<Concept>>  resultMap = new HashMap<String, ArrayList<Concept>>();
+		
+		ArrayList<Concept> arrPleasantness;
+		ArrayList<Concept> arrAttention;
+		ArrayList<Concept> arrSensitivity;
+		ArrayList<Concept> arrAptitude;
+		HashMap<String, Integer> conceptFreq = new HashMap<String, Integer>();
+		
+		
+		ArrayList<String> sentence = new ArrayList<String>();
+
+		senticConcept = new ConceptLoader().getSenticConcept();
+		
+		System.out.println("sentic size: " + senticConcept.length);
+		int match = 0;
+		for(String s1: paragraph)
+		{
+			sentence = splitter.splitSentence(s1);
+			
+			for(String s2: sentence)
+			{
+				Lemmatizer l = Lemmatizer.getInstance();
+				ArrayList<String> arrTokenized = l.lemmatize(s2);
+				
+				//look for possible combinations from the sentence that match the concept
+				for(Concept concept: senticConcept)
+				{
+					String[] splitConcept = concept.getConcept().split("\\s+");
+					
+					boolean found;
+					for(int i = 0; i< splitConcept.length; i++)
+					{	
+						found = false;
+						for(int j = 0; j < arrTokenized.size(); j++){
+							if(splitConcept[i].equals(arrTokenized.get(j))){
+								found = true;	
+								break;
+							}
+						}
+						
+						if(!found)
+							break;
+						else if(i == splitConcept.length-1)
+						{
+							int count = conceptFreq.containsKey(concept.getConcept()) ? conceptFreq.get(concept.getConcept()) : 0;
+							conceptFreq.put(concept.getConcept(), count + 1);
+							match++;
+						}
+					}
+				}
 			}
 		}
-		System.out.println("Match: "+ match + " Not match: " + notMatch);
-		return emoMap;
+		arrPleasantness = generateEmotionList(conceptFreq, SenticConstant.api_pleasantness);
+		arrAptitude = generateEmotionList(conceptFreq, SenticConstant.api_aptitude);
+		arrAttention = generateEmotionList(conceptFreq, SenticConstant.api_attention);
+		arrSensitivity = generateEmotionList(conceptFreq, SenticConstant.api_sensitivity);
+		
+		resultMap.put(SenticConstant.api_pleasantness, arrPleasantness);
+		resultMap.put(SenticConstant.api_aptitude, arrAptitude);
+		resultMap.put(SenticConstant.api_attention, arrAttention);
+		resultMap.put(SenticConstant.api_sensitivity, arrSensitivity);
+		
+		System.out.println("Match: "+ match);
+		return resultMap;
 	}
+	
+	//get the concept list corresponds to the emotion dimension
+	//filter out the dimension with 0 score
+	public ArrayList<Concept> generateEmotionList(HashMap<String, Integer> conceptFreq, String conceptDimension){
+		ArrayList<Concept> result = new ArrayList<Concept>();
+		
+		for(Map.Entry<String, Integer> set: conceptFreq.entrySet())
+		{
+			Concept c = getConcept(set.getKey());
+			c.setfrequency(set.getValue());
+			if(conceptDimension.equals(SenticConstant.api_pleasantness) && c.getPleasantness() != 0)
+				result.add(c);
+			else if(conceptDimension.equals(SenticConstant.api_attention) && c.getAttention() != 0)
+				result.add(c);
+			else if(conceptDimension.equals(SenticConstant.api_sensitivity) && c.getSensitivity() != 0)
+				result.add(c);
+			else if(conceptDimension.equals(SenticConstant.api_aptitude) && c.getAptitude() != 0)
+				result.add(c);
+		}
+		return result;
+	}
+	
+	public Concept getConcept(String concept){
+		for(Concept c: senticConcept){
+			if(c.getConcept().equals(concept))
+				return c;
+		}
+		return null;
+	}
+	
+	
+	
 	
 	public HashMap<String, Float> getMapPercentage(HashMap<String, Integer> oriMap){
 		HashMap<String, Float> result = new HashMap<String, Float>();
@@ -139,5 +193,16 @@ public class EmotionAnalyzer {
 				result.put(key, value/total);
 		}
 		return result;
+	}
+	
+	public static void main(String args[]){
+		EmotionAnalyzer e = new EmotionAnalyzer();
+//		String[] sTest = {"book", "i buy a lot of book"};
+		String[] sTest = {"and though the book puts great emphasis on mathematics and even includes a big section on important mathematical background knowledge, it contains too many errors in the mathematical formulas, so they are of little use."};
+		
+		HashMap<String, ArrayList<Concept>> map = e.getDimensionConcept(sTest);
+
+		PrintIO.printMap(map);
+		
 	}
 }
