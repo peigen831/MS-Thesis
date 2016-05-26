@@ -30,11 +30,19 @@ public class Lemmatizer {
         // (required for lemmatization), and lemmatization
         Properties props;
         props = new Properties();
-        props.put("annotators", "tokenize, ssplit, pos, lemma");
+        props.put("annotators", "tokenize, ssplit, pos, lemma, parse, depparse, natlog, openie");
 
         // StanfordCoreNLP loads a lot of models, so you probably
         // only want to do this once per execution
         this.pipeline = new StanfordCoreNLP(props);
+    }
+    
+    public List<CoreMap> getCoreMap(String input){
+    	Annotation document = new Annotation(input);
+    	
+    	this.pipeline.annotate(document);
+    	
+    	return document.get(SentencesAnnotation.class);
     }
 
     public ArrayList<String> lemmatize(String documentText)
@@ -61,11 +69,12 @@ public class Lemmatizer {
     }
     
     public static void main(String args[]){
-    	String s = "My 1st sentence. “Does it work for OBAMA Obama questions?” My third sentence.";
+    	String s = "I finished work, walked to the beach, and found a nice place to swim.";
     	
     	List<String> l = new Lemmatizer().lemmatize(s);
     	
+    	System.out.println(s);
     	for(String a: l)
-    		System.out.print(a);
+    		System.out.print(a+ " ");
     }
 }

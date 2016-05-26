@@ -23,6 +23,19 @@ public class Concept {
 	public void setfrequency(int nFreq) {
 		this.frequency = nFreq;
 	}
+	
+	public float getDimensionValue(String dimension){
+		if(dimension.equals(SenticConstant.api_attention))
+			return attention;
+		else if(dimension.equals(SenticConstant.api_aptitude))
+			return aptitude;
+		else if(dimension.equals(SenticConstant.api_sensitivity))
+			return sensitivity;
+		else if(dimension.equals(SenticConstant.api_pleasantness))
+			return pleasantness;
+		return (float)0.0;
+	}
+	
 	public void setSemantics(ArrayList<String> semantics) {
 		this.semantics = semantics;
 	}
@@ -75,22 +88,9 @@ public class Concept {
 	public void addSemantics(String semantic){
 		semantics.add(semantic);
 	}
-	
-	public void checkComplete(){
-//		private String concept;
-//		private String description;
-//		private float pleasantness;
-//		private float attention;
-//		private float sensitivity;
-//		private float aptitude;
-//		
-//		private float polarity;
-//		private ArrayList<String> semantics = new ArrayList<String>();
-//		if(concept==null || description ==null || pleasantness == null || attention == null ||sensitivity == null)
-	}
+
 	
 	public static void main(String args[]){
 		Concept c=  new Concept();
-		c.checkComplete();
 	}
 }

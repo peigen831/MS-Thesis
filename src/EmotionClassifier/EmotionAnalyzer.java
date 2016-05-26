@@ -1,4 +1,4 @@
-package dataprocessor;
+package EmotionClassifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,13 +7,11 @@ import java.util.Map;
 import Sentic.Concept;
 import Sentic.ConceptLoader;
 import Sentic.SenticConstant;
-import helper.FileIO;
-import helper.PrintIO;
+import dataprocessor.Lemmatizer;
+import dataprocessor.SentenceSplitter;
+import helper.DataFormat;
 
 public class EmotionAnalyzer {
-	private FileIO io = new FileIO();
-	
-	public DataInterpreter interpreter = new DataInterpreter();
 	
 	private SentenceSplitter splitter = new SentenceSplitter();
 	
@@ -22,17 +20,17 @@ public class EmotionAnalyzer {
 	Concept[] senticConcept;
 	
 	
-	public HashMap<String, Integer> computeEmotionFreq(String articleID){
-
-		HashMap<String, Integer>  emoMap;
-		String linedText = io.readText(FileIO.dirProcessed + articleID);
-		interpreter.setRawText(linedText);
-		String[] body = interpreter.getBodyAsArr();
-		
-//		emoMap = conceptBasedApproach(body);
-		
-		return null;
-	}
+//	public HashMap<String, Integer> computeEmotionFreq(String articleID){
+//
+//		HashMap<String, Integer>  emoMap;
+//		String linedText = io.readText(FileIO.dirProcessed + articleID);
+//		interpreter.setRawText(linedText);
+//		String[] body = interpreter.getBodyAsArr();
+//		
+////		emoMap = conceptBasedApproach(body);
+//		
+//		return null;
+//	}
 //	
 //	public HashMap<String, Integer> basicApproach(String[] body){
 //		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
@@ -68,6 +66,7 @@ public class EmotionAnalyzer {
 //		return emoMap;
 //	}
 	
+
 	//return present sentic concepts
 	//string - emotional dimension
 	//arrList - list of concepts with corresponding freq count
@@ -195,14 +194,56 @@ public class EmotionAnalyzer {
 		return result;
 	}
 	
+	
+	public HashMap<String, ArrayList<Concept>> extractConcept(String[] paragraph){
+		
+		HashMap<String, ArrayList<Concept>>  resultMap = new HashMap<String, ArrayList<Concept>>();
+		
+		ArrayList<Concept> arrPleasantness;
+		ArrayList<Concept> arrAttention;
+		ArrayList<Concept> arrSensitivity;
+		ArrayList<Concept> arrAptitude;
+		HashMap<String, Integer> conceptFreq = new HashMap<String, Integer>();
+		
+		
+		ArrayList<String> sentence = new ArrayList<String>();
+
+		senticConcept = new ConceptLoader().getSenticConcept();
+		
+		for(String s1: paragraph)
+		{
+			sentence = splitter.splitSentence(s1);
+			
+			for(String s2: sentence)
+			{
+				//1. break into clauses, seprate into verb and noun chunks
+				//	- if a piece of text contains a preposition or subordinating conjunctions, the words preceding these words are OBJECTS
+				//2. clause normalization
+//					a. Lancaster stemming algo
+//					b. potential noun chunk associate with individual verb chunks (stemmed verb) to detect multi-work expressions of the form "verb + object"
+//					Object -> POS based bigram algo. to checks noun phrases for stopwords and adjectives
+				
+			}
+		}
+		return resultMap;
+	}
+	
+
+	
 	public static void main(String args[]){
 		EmotionAnalyzer e = new EmotionAnalyzer();
 //		String[] sTest = {"book", "i buy a lot of book"};
+		
+		//go walk, go park
+		String clause = "I went for a walk in the park";
+		
+		String sentence = "I am going to the market to buy vegetables and some fruits";
+		
 		String[] sTest = {"and though the book puts great emphasis on mathematics and even includes a big section on important mathematical background knowledge, it contains too many errors in the mathematical formulas, so they are of little use."};
 		
 		HashMap<String, ArrayList<Concept>> map = e.getDimensionConcept(sTest);
 
-		PrintIO.printMap(map);
+		DataFormat.getInstance().printMap(map);
 		
 	}
 }

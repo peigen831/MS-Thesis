@@ -36,7 +36,7 @@ public class FileIO {
 		return instance;
 	}
 	
-	public void writeFile(String filepath, String html){
+	public void writeFile(String filepath, String text){
 		//TODO fix writing format
 		boolean alreadyExists = new File(filepath).exists();
 		
@@ -52,7 +52,7 @@ public class FileIO {
 		Writer out;
 		try {
 			out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), Charset.forName(FileIO.charset8)));
-		    out.write(html);
+		    out.write(text);
 		    out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -95,8 +95,10 @@ public class FileIO {
 		    String everything = sb.toString();
 		    br.close();
 		}catch(Exception e){
-			e.printStackTrace();
+			return null;
 		}
 		return sb.toString();
 	}
+	
+	
 }

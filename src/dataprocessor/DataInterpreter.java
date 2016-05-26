@@ -9,12 +9,20 @@ public class DataInterpreter {
 	
 	private String rawText;
 	
+	private static DataInterpreter instance = null;
+	
+	public static DataInterpreter getInstance(){
+		if(instance==null)
+			instance = new DataInterpreter();
+		return instance;
+	}
+	
 	public DataInterpreter(String rawText){
 		this.rawText = rawText;
 	}
 	
-	public DataInterpreter() {
-		// TODO Auto-generated constructor stub
+	public DataInterpreter(){
+		
 	}
 
 	public void setRawText(String rawText){
@@ -36,6 +44,7 @@ public class DataInterpreter {
 		
 		return result;
 	}
+
 	
 	public String getBody(){
 		String[] arrS = rawText.split("\n");
@@ -75,7 +84,7 @@ public class DataInterpreter {
 		return result;
 	}
 	
-	public String[] getBodyAsArr(){
+	public String[] getParagraph(){
 		String[] arrS = rawText.split("\n");
 		ArrayList<String> result  = new ArrayList<String>();
 		for(int i = 3; i < arrS.length; i++){
