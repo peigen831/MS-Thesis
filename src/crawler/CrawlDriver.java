@@ -12,22 +12,22 @@ public class CrawlDriver {
 		
 		//store formated file  if( fail continue)
 		//store raw format
-		int initialID = 81007;
-		int range = 1;
+		int initialID = 81000;
+		int range = 10;
 		
-//		JsoupCrawler crawler = new JsoupCrawler();
-//		
+		JsoupCrawler crawler = new JsoupCrawler();
+		
 //		crawler.printDocument(initialID);
-//		
-//		crawler.setCrawlRange(initialID, range);
-//		
-//		crawler.startCrawl();
-		Document doc = FileIO.getInstance().readFile(FileIO.dirRaw+initialID);
 		
-		HTMLInterpreter i = new HTMLInterpreter();
+		crawler.setCrawlRange(initialID, range);
 		
-		System.out.println("temp");
-		System.out.println(i.getBodyAsString(doc));
+		crawler.startCrawl();
+//		Document doc = FileIO.getInstance().readFile(FileIO.dirRaw+initialID);
+//		
+//		HTMLInterpreter i = new HTMLInterpreter();
+//		
+//		System.out.println("temp");
+//		System.out.println(i.getBodyAsString(doc));
 	}
 
 }

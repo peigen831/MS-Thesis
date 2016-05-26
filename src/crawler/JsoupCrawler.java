@@ -65,7 +65,7 @@ public class JsoupCrawler {
 		//TODO filter if file contains video
 		//TODO filter no emotion article
 		
-		if(docContent != null)
+		if(docContent != null && !docContent.baseUri().contains("/indonesia/"))
 		{
 			String sAllmood = this.fetchMoodJSON(articleID);
 			sAllmood = interpreter.formatAllMood(sAllmood);
@@ -76,7 +76,10 @@ public class JsoupCrawler {
 			sFormat += sAllmood + "\n";
 			sFormat += interpreter.getBodyAsString(docContent);
 			
+			//write formated article content
 			io.writeFile(FileIO.dirProcessed + articleID, sFormat);
+			
+			//write raw article conten
 			io.writeFile(FileIO.dirRaw + articleID, docContent.html());
 			System.out.println("Done write: " + articleID);
 		}

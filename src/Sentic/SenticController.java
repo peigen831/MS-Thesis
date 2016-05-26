@@ -3,8 +3,8 @@ package Sentic;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import EmotionClassifier.EmotionAnalyzer;
 import dataprocessor.DataInterpreter;
+import emotion_classifier.EmotionAnalyzer;
 import helper.DataFormat;
 import helper.FileIO;
 
