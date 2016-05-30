@@ -40,7 +40,21 @@ public class DataInterpreter {
 			String[] moodVal = s.split(",");
 			result.put(moodVal[0], Integer.valueOf(moodVal[1]));
 		}
-//		System.out.println(mood);
+		
+		return result;
+	}
+	
+	public HashMap<String, Integer> getMood(String rawText){  
+		String[] arrS = rawText.split("\n");
+		String mood = arrS[2];
+		
+		String[] tmp = mood.split("\\s+");
+		HashMap<String, Integer> result = new HashMap<String, Integer>();
+		
+		for(String s: tmp){
+			String[] moodVal = s.split(",");
+			result.put(moodVal[0], Integer.valueOf(moodVal[1]));
+		}
 		
 		return result;
 	}

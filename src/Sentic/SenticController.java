@@ -23,7 +23,7 @@ public class SenticController {
 			
 			HashMap<String, ArrayList<Concept>> map = analyzer.getDimensionConcept(paragraph);
 			
-			String sWrite = DataFormat.getInstance().generateConceptCSV(map);
+			String sWrite = DataFormat.getInstance().generateConceptCSVString(map);
 			
 			FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
 			System.out.println("Done " + i);
@@ -46,33 +46,6 @@ public class SenticController {
 //		
 //		System.out.println(rappler);
 //		System.out.println(result);
-		
-		
-		//TODO change article ID 
-//		IO.getInstance().writeFile(IO.dirResult + articleID, rappler+result);
-		
-		
-//		IO io = new IO();
-		
-//		Document doc = io.readArticle(path);
-		
-//		NewsInterpreter interpreter = new NewsInterpreter();
-//		
-//		ArrayList<String> arrParagraph = interpreter.getContent(doc);
-//		
-//		for(String s: arrParagraph)
-//		{
-//			System.out.println(s);
-//			Lemmatizer l = Lemmatizer.getInstance();
-//			ArrayList<String> arr = l.lemmatize(s);
-//			System.out.println(s);
-//			for(String a : arr)
-//				System.out.print(a + " ");
-//			System.out.println();
-//			sentence split for each paragraph
-//			
-//		}
-			
 	}
 
 }

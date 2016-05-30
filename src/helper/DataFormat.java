@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import Sentic.Concept;
+import Sentic.MoodConstant;
+import crawler.HTMLInterpreter;
 
 public class DataFormat {
 	
@@ -16,7 +18,7 @@ public class DataFormat {
 		return instance;
 	}
 	
-	public String generateConceptCSV(HashMap<String, ArrayList<Concept>> map){
+	public String generateConceptCSVString(HashMap<String, ArrayList<Concept>> map){
 		
 		String result = "";
 		// word, frequency, dimension, weight
@@ -31,6 +33,27 @@ public class DataFormat {
 				result += c.getConcept()+ ", "+ c.getfrequency() + ", " + dimension+ ", " + c.getDimensionValue(dimension) + "\n";
 		 }
 		
+		return result;
+	}
+	
+	public String generateMoodComparisonString(HashMap<String, Integer> actualMap, HashMap<String, Float> predictMap){
+		String result = "";
+		for(Entry<String, Integer> entry: actualMap.entrySet())
+		 {
+			 String emotion = entry.getKey();
+			 
+			 if(!emotion.equals(MoodConstant.NA) && !emotion.equals(HTMLInterpreter.mood_inspired))
+			 {	 
+				 int actualMood = entry.getValue();
+				 
+				 Float predictMood = predictMap.get(emotion);
+				 System.out.println(emotion);
+				 
+				 Float difference = Math.abs(predictMood - actualMood); 
+				 
+				 result += emotion + ", " + actualMood + ", " + (predictMood * 100) + ", " + difference +"\n";
+			 }
+		 }
 		return result;
 	}
 	

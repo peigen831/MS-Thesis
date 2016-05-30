@@ -60,6 +60,24 @@ public class ConceptLoader {
 //	}
 	
 	//Add another function for multiple words
+	public String[] getRecalculateSenticValue(String word){
+		String[] result = null;
+		BasicSenticCalculator calcu = new BasicSenticCalculator();
+		
+		for(Concept c: arrConcept){
+			if(word.equals(c.getConcept()))
+			{
+				result = new String[4];
+				result[0] = calcu.computePleasantness(c.getPleasantness());
+				result[1] = calcu.computeAttention(c.getAttention());
+				result[2] = calcu.computeSensitivity(c.getSensitivity());
+				result[3] = calcu.computeAptitude(c.getAptitude());
+				break;
+			}
+		}
+		return result;
+	}
+	
 	public String[] getSenticValue(String word){
 		String[] result = null;
 		

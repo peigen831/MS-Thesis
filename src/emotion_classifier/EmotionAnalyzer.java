@@ -22,51 +22,6 @@ public class EmotionAnalyzer {
 	Concept[] senticConcept;
 	
 	
-	public HashMap<String, Integer> computeEmotionFreq(String articleID){
-
-		HashMap<String, Integer>  emoMap;
-		String linedText = FileIO.getInstance().readText(FileIO.dirProcessed + articleID);
-		String[] body = DataInterpreter.getInstance().getParagraph(linedText);
-		
-		emoMap = basicApproach(body);
-		
-		return emoMap;
-	}
-	
-	public HashMap<String, Integer> basicApproach(String[] body){
-		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
-		
-		ArrayList<String> sentenceSplitted = new ArrayList<String>();
-
-		int match = 0;
-		int notMatch = 0;
-		for(String s1: body)
-		{
-			sentenceSplitted = splitter.splitSentence(s1);
-			
-			for(String s2: sentenceSplitted)
-			{
-				Lemmatizer l = Lemmatizer.getInstance();
-				ArrayList<String> sTokenized = l.lemmatize(s2);
-				for(String lemma : sTokenized)
-				{
-					String[] senticVal = loader.getSenticValue(lemma);
-					if(senticVal != null){
-						match++;
-						for(String emotion: senticVal){
-							int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
-							emoMap.put(emotion, count + 1);
-						}
-					}
-					else
-						notMatch++;
-				}
-			}
-		}
-		System.out.println("Match: "+ match + " Not match: " + notMatch);
-		return emoMap;
-	}
-	
 
 	//return present sentic concepts
 	//string - emotional dimension
@@ -167,9 +122,6 @@ public class EmotionAnalyzer {
 		}
 		return null;
 	}
-	
-	
-	
 	
 	public HashMap<String, Float> getEmotionPercentage(HashMap<String, Integer> emotionMap){
 		HashMap<String, Float> result = new HashMap<String, Float>();
