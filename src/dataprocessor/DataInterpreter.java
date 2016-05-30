@@ -94,6 +94,16 @@ public class DataInterpreter {
 		return result.toArray(new String[0]);
 	}
 	
+	public String[] getParagraph(String rawText){
+		String[] arrS = rawText.split("\n");
+		ArrayList<String> result  = new ArrayList<String>();
+		for(int i = 3; i < arrS.length; i++){
+			if(!arrS[i].trim().equals(""))
+				result.add(arrS[i]);
+		}
+		return result.toArray(new String[0]);
+	}
+	
 	public String getUrl(){
 		String[] arrS = rawText.split("\n");
 		return arrS[0];

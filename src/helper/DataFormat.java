@@ -34,6 +34,17 @@ public class DataFormat {
 		return result;
 	}
 	
+	public void printFloatMap(HashMap<String, Float> floatMap){
+		for(Entry<String, Float> entry: floatMap.entrySet())
+		 {
+			 String emotion = entry.getKey();
+					 
+			 Float percentage = entry.getValue();
+			 
+			 System.out.println(emotion + ": " + percentage);
+		 }
+	}
+	
 	public void printMap(HashMap<String, ArrayList<Concept>> emoMap){
 		 ArrayList<Concept> arr;
 		 

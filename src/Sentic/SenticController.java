@@ -18,8 +18,8 @@ public class SenticController {
 		for(int i = 81000; i < 81050; i++){
 
 			String linedText = FileIO.getInstance().readText(FileIO.dirProcessed + i);
-			DataInterpreter.getInstance().setRawText(linedText);
-			String[] paragraph = DataInterpreter.getInstance().getParagraph();
+			
+			String[] paragraph = DataInterpreter.getInstance().getParagraph(linedText);
 			
 			HashMap<String, ArrayList<Concept>> map = analyzer.getDimensionConcept(paragraph);
 			

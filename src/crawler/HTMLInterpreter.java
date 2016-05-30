@@ -23,7 +23,7 @@ public class HTMLInterpreter {
 		
 		Element element = doc.select("div.storypage-divider").first();
 		
-		Elements eParagraph = element.select("p:not([^])");
+		Elements eParagraph = element.select("p");
 		
 		for(Element e: eParagraph){
 	        arrParagraph.add(e.text());

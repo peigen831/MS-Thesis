@@ -13,7 +13,7 @@ public class JsoupCrawler {
 	public final static String moodURL = "http://mm.rappler.com/moodmeter/ranking?rsort=1&content_id=";
 
 	int initialID;
-	int nArticle;
+	int nArticleToCrawl;
 
 	FileIO io = new FileIO();
 	HTMLInterpreter interpreter = new HTMLInterpreter();
@@ -42,15 +42,18 @@ public class JsoupCrawler {
 	
 	public void setCrawlRange(int initialID, int range){
 		this.initialID = initialID;
-		this.nArticle = range;
+		this.nArticleToCrawl = range;
 	}
 	
 	public void startCrawl(){
 		System.out.println("Getting content...");
 		
-		for(int i = 0; i < nArticle; i++)
+		int counter = 0;
+		for(int i = 0; counter < nArticleToCrawl; i++)
 		{
-			startCrawl(initialID+i);
+			boolean valid = startCrawl(initialID+i);
+			if(valid)
+				counter++;
 		}			
 	}
 	
@@ -59,9 +62,9 @@ public class JsoupCrawler {
 		System.out.println(interpreter.getBodyAsString(doc));
 	}
 	
-	public void startCrawl(int articleID){
+	public boolean startCrawl(int articleID){
 		Document docContent = this.fetchHTML(articleID);
-		//TODO filter if URL contains indonesia or no articleID or video
+		boolean isValid = false;
 		//TODO filter if file contains video
 		//TODO filter no emotion article
 		
@@ -82,30 +85,16 @@ public class JsoupCrawler {
 			//write raw article conten
 			io.writeFile(FileIO.dirRaw + articleID, docContent.html());
 			System.out.println("Done write: " + articleID);
+			isValid = true;
 		}
+		return isValid;
 	}
 	
 
 	
 	public static void main(String[] args) throws IOException{
-
-		int articleID = 124623;
-		String targetURL;
-		
-//		for(int i = 0 ; i < 10; i++)
-//		{
-//			try{
-//				Document doc = jCrawler.getHTML(baseURL + (articleID + i));
-//				jCrawler.writeArticle(dirStorage + (articleID + i), doc.html());
-//			}catch(Exception e){
-//				System.out.println("Error: " + articleID);
-//			}
-//		}
-
-
 		
 //		NewsInterpreter interpreter = new NewsInterpreter();
-//		
 //		
 //		System.out.println(doc.title());
 //		System.out.println(doc.baseUri());

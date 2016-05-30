@@ -7,9 +7,11 @@ import java.util.Map;
 import Sentic.Concept;
 import Sentic.ConceptLoader;
 import Sentic.SenticConstant;
+import dataprocessor.DataInterpreter;
 import dataprocessor.Lemmatizer;
 import dataprocessor.SentenceSplitter;
 import helper.DataFormat;
+import helper.FileIO;
 
 public class EmotionAnalyzer {
 	
@@ -20,51 +22,50 @@ public class EmotionAnalyzer {
 	Concept[] senticConcept;
 	
 	
-//	public HashMap<String, Integer> computeEmotionFreq(String articleID){
-//
-//		HashMap<String, Integer>  emoMap;
-//		String linedText = io.readText(FileIO.dirProcessed + articleID);
-//		interpreter.setRawText(linedText);
-//		String[] body = interpreter.getBodyAsArr();
-//		
-////		emoMap = conceptBasedApproach(body);
-//		
-//		return null;
-//	}
-//	
-//	public HashMap<String, Integer> basicApproach(String[] body){
-//		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
-//		
-//		ArrayList<String> sentenceSplitted = new ArrayList<String>();
-//
-//		int match = 0;
-//		int notMatch = 0;
-//		for(String s1: body)
-//		{
-//			sentenceSplitted = splitter.splitSentence(s1);
-//			
-//			for(String s2: sentenceSplitted)
-//			{
-//				Lemmatizer l = Lemmatizer.getInstance();
-//				ArrayList<String> sTokenized = l.lemmatize(s2);
-//				for(String lemma : sTokenized)
-//				{
-//					String[] senticVal = model.getSenticValue(lemma);
-//					if(senticVal != null){
-//						match++;
-//						for(String emotion: senticVal){
-//							int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
-//							emoMap.put(emotion, count + 1);
-//						}
-//					}
-//					else
-//						notMatch++;
-//				}
-//			}
-//		}
-//		System.out.println("Match: "+ match + " Not match: " + notMatch);
-//		return emoMap;
-//	}
+	public HashMap<String, Integer> computeEmotionFreq(String articleID){
+
+		HashMap<String, Integer>  emoMap;
+		String linedText = FileIO.getInstance().readText(FileIO.dirProcessed + articleID);
+		String[] body = DataInterpreter.getInstance().getParagraph(linedText);
+		
+		emoMap = basicApproach(body);
+		
+		return emoMap;
+	}
+	
+	public HashMap<String, Integer> basicApproach(String[] body){
+		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
+		
+		ArrayList<String> sentenceSplitted = new ArrayList<String>();
+
+		int match = 0;
+		int notMatch = 0;
+		for(String s1: body)
+		{
+			sentenceSplitted = splitter.splitSentence(s1);
+			
+			for(String s2: sentenceSplitted)
+			{
+				Lemmatizer l = Lemmatizer.getInstance();
+				ArrayList<String> sTokenized = l.lemmatize(s2);
+				for(String lemma : sTokenized)
+				{
+					String[] senticVal = loader.getSenticValue(lemma);
+					if(senticVal != null){
+						match++;
+						for(String emotion: senticVal){
+							int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
+							emoMap.put(emotion, count + 1);
+						}
+					}
+					else
+						notMatch++;
+				}
+			}
+		}
+		System.out.println("Match: "+ match + " Not match: " + notMatch);
+		return emoMap;
+	}
 	
 
 	//return present sentic concepts
@@ -170,11 +171,10 @@ public class EmotionAnalyzer {
 	
 	
 	
-	public HashMap<String, Float> getMapPercentage(HashMap<String, Integer> oriMap){
+	public HashMap<String, Float> getEmotionPercentage(HashMap<String, Integer> emotionMap){
 		HashMap<String, Float> result = new HashMap<String, Float>();
 		float total = 0;
-		System.out.println("map size: " + oriMap.size() );
-		for (Map.Entry<String,Integer> entry : oriMap.entrySet()) {
+		for (Map.Entry<String,Integer> entry : emotionMap.entrySet()) {
 			String key = entry.getKey();
 			int value = entry.getValue();
 			
@@ -183,7 +183,7 @@ public class EmotionAnalyzer {
 		}
 		
 		
-		for (Map.Entry<String,Integer> entry : oriMap.entrySet()) {
+		for (Map.Entry<String,Integer> entry : emotionMap.entrySet()) {
 			
 			String key = entry.getKey();
 			int value = entry.getValue();
