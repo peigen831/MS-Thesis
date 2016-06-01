@@ -3,10 +3,13 @@ package emotion_classifier;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import Sentic.Concept;
 import Sentic.ConceptLoader;
+import Sentic.MoodConstant;
 import dataprocessor.DataInterpreter;
 import dataprocessor.Lemmatizer;
 import dataprocessor.SentenceSplitter;
@@ -46,11 +49,11 @@ public class BasicEmotionAnalyzer {
 			for(String s2: sentenceSplitted)
 			{
 				Lemmatizer l = Lemmatizer.getInstance();
-				ArrayList<String> sTokenized = l.lemmatize(s2);
-				for(String lemma : sTokenized)
+				ArrayList<String> wordsInSentence = l.lemmatize(s2);
+				for(String word : wordsInSentence)
 				{
 					//try to get the concept from sentic
-					String[] senticVal = loader.getRecalculateSenticValue(lemma);
+					String[] senticVal = loader.getRecalculateSenticValue(word);
 					if(senticVal != null){
 						match++;
 						for(String emotion: senticVal){
@@ -70,11 +73,12 @@ public class BasicEmotionAnalyzer {
 	public HashMap<String, Float> getEmotionPercentage(HashMap<String, Integer> emotionMap){
 		HashMap<String, Float> result = new HashMap<String, Float>();
 		float total = 0;
+		
 		for (Map.Entry<String,Integer> entry : emotionMap.entrySet()) {
 			String key = entry.getKey();
 			int value = entry.getValue();
 			
-			if(key != null)
+			if(!(key == null || key.equals(MoodConstant.NA)))
 				total += value;;
 		}
 		
@@ -84,7 +88,7 @@ public class BasicEmotionAnalyzer {
 			String key = entry.getKey();
 			int value = entry.getValue();
 			
-			if(key != null)
+			if(!(key == null || key.equals(MoodConstant.NA)))
 				result.put(key, value/total);
 		}
 		return result;
@@ -101,10 +105,16 @@ public class BasicEmotionAnalyzer {
 	public static void main(String[] args) {
 		BasicEmotionAnalyzer analyzer = new BasicEmotionAnalyzer();
 		
+		HashMap<String, HashMap<String, Integer>> allArticleActualMood = new HashMap<String, HashMap<String, Integer>>();
+		HashMap<String, HashMap<String, Float>> allArticlePredictMood = new HashMap<String, HashMap<String, Float>>();
+		
+		List<String> selectedArticle = new ArrayList<String>();
+		
 		HashMap<String, Integer> actual;
 		HashMap<String, Float> predict;
+		int count = 40;
 		
-		for(int i = 81000; i < 81002; i++){
+		for(int i = 81012; count > 0; i++){
 			
 			String filepath = FileIO.dirProcessed + i;
 			
@@ -118,13 +128,33 @@ public class BasicEmotionAnalyzer {
 				
 				actual = analyzer.getActualMood(filepath);
 				
-				String sWrite = DataFormat.getInstance().generateMoodComparisonString(actual, predict);
+				String foundArticle = Integer.toString(i);
 				
-				FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
-				System.out.println("Done " + i);
-
+				allArticleActualMood.put(foundArticle, actual);
+				allArticlePredictMood.put(foundArticle, predict);
+				
+//				String sWrite = DataFormat.getInstance().generateMoodComparisonString(actual, predict);
+//				
+//				FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
+//				
+				System.out.println("analyzed: " + i);
+				
+				
+				count--;
 			}
+		}
+		System.out.println("writing");
+		
+		HashMap<String, String> moodMap = DataFormat.getInstance().generateMoodBasedResult(allArticleActualMood, allArticlePredictMood);
+				
+		for(Entry<String, String> mood: moodMap.entrySet())
+		{
+			String sWrite = mood.getValue();
+			System.out.println(sWrite);
 			
+			FileIO.getInstance().writeFile(FileIO.dirResult + mood.getKey()+ ".CSV", sWrite);
+			
+			System.out.println("Done write: " + mood.getKey());
 		}
 	}
 }
