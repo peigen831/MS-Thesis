@@ -53,12 +53,6 @@ public class ConceptLoader {
         return model;
 	}
 	
-//	public SenticConcept[] getSenticConcept(){
-//		if(arrConcept[0]==null)
-//			loadConcept();
-//		return arrConcept;
-//	}
-	
 	//Add another function for multiple words
 	public String[] getRecalculateSenticValue(String word){
 		String[] result = null;
@@ -178,18 +172,7 @@ public class ConceptLoader {
 
 	public static void main(String args[]){
 		ConceptLoader model = new ConceptLoader();
-		float a = (float) 0.99; //ecstacy
-		float b = (float) (1.0/3); //serenity
-		float c = (float) (1.5/3); //joy
-		float d = (float) (0); //na
-		float e = (float) -(1.0 /3); //pensiveness
-		float f = (float) -(2.5 /3); //grief
-		
-//		System.out.println(model.computePleasantness(a));
-//		System.out.println(model.computePleasantness(b));
-//		System.out.println(model.computePleasantness(c));
-//		System.out.println(model.computePleasantness(d));
-//		System.out.println(model.computePleasantness(e));
-//		System.out.println(model.computePleasantness(f));
+		model.loadConcept();
+		model.printAll();
 	}
 }

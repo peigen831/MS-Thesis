@@ -89,7 +89,7 @@ public class BasicEmotionAnalyzer {
 			int value = entry.getValue();
 			
 			if(!(key == null || key.equals(MoodConstant.NA)))
-				result.put(key, value/total);
+				result.put(key, value/total * 100);
 		}
 		return result;
 	}
