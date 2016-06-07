@@ -2,7 +2,9 @@ package emotion_classifier;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,7 +18,7 @@ import dataprocessor.SentenceSplitter;
 import helper.DataFormat;
 import helper.FileIO;
 
-public class BasicEmotionAnalyzer {
+public class MultiWordEmotionAnalyzer {
 	
 	private SentenceSplitter splitter = new SentenceSplitter();
 	
@@ -24,52 +26,89 @@ public class BasicEmotionAnalyzer {
 	
 	Concept[] senticConcept;
 	
+	public static void buildOneString(String[] body){
+		String wholeArticle = "";
+		for(String s: body){
+			ArrayList<String> lemma = Lemmatizer.getInstance().lemmatize(s);
+			for(String s1: lemma)
+				wholeArticle += s1 + " ";
+			wholeArticle += "\n";
+		}
+		System.out.println(wholeArticle);
+	}
+	
 	public HashMap<String, Integer> computeEmotionFreq(String filepath){
 
 		HashMap<String, Integer>  emoMap;
 		String linedText = FileIO.getInstance().readText(filepath);
 		String[] body = DataInterpreter.getInstance().getParagraph(linedText);
 		
-		emoMap = basicApproach(body);
+		emoMap = MultiWordApproach(body);
 		
 		return emoMap;
 	}
 	
-	public HashMap<String, Integer> basicApproach(String[] body){
+	public HashMap<String, Integer> MultiWordApproach(String[] body){
 		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
+		
+		HashSet<Concept> existConcept = new HashSet<Concept>();
 		
 		ArrayList<String> sentenceSplitted = new ArrayList<String>();
 
-		int match = 0;
-		int notMatch = 0;
-		for(String s1: body)
+		for(String sBody: body)
 		{
-			sentenceSplitted = splitter.splitSentence(s1);
+			sentenceSplitted = splitter.splitSentence(sBody);
 			
-			for(String s2: sentenceSplitted)
+			for(String sSentence: sentenceSplitted)
 			{
 				Lemmatizer l = Lemmatizer.getInstance();
-				ArrayList<String> wordsInSentence = l.lemmatize(s2);
-				for(String word : wordsInSentence)
-				{
-					//try to get the concept from sentic
-					String[] senticVal = loader.getBasicSenticValue(word);
-					
-					//if senticnet has the word
-					if(senticVal != null){
-						match++;
-						for(String emotion: senticVal){
-							int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
-							emoMap.put(emotion, count + 1);
-						}
-					}
-					else
-						notMatch++;
-				}
+				ArrayList<String> lemmatizeSentence = l.lemmatize(sSentence);
+				
+				existConcept.addAll(getExistConcept(lemmatizeSentence.toArray(new String[lemmatizeSentence.size()])));
+				System.out.println("Done: " + lemmatizeSentence);
 			}
 		}
-		System.out.println("Match: "+ match + " Not match: " + notMatch);
+		
+		for(Concept c: existConcept){
+			String[] emotionVals = loader.getBasicSenticValue(c);
+			
+			for(String emotion: emotionVals){
+				int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
+				emoMap.put(emotion, count + 1);
+			}
+		}
 		return emoMap;
+	}
+	
+	public HashSet<Concept> getExistConcept(String[] sSentence){
+
+		ConceptLoader loader = new ConceptLoader();
+		loader.loadConcept();
+		Concept[] arrConcept = loader.getSenticConcept();
+		HashSet<Concept> result = new HashSet<Concept>();
+		
+		for(Concept concept: arrConcept)
+		{
+			if(hasConcept(concept.getConcept().toLowerCase(), sSentence));
+				result.add(concept);
+		}
+		return result;
+	}
+	
+	public boolean hasConcept(String concept, String[] sSentence){
+		String [] splitConcept = concept.split(" ");
+		for(int i = 0; i < splitConcept.length; i++)
+		{	
+			for(int j = 0; j < sSentence.length; j++)
+			{
+				if(splitConcept[i].equals(sSentence[j]))
+					break;
+
+				if(j == sSentence.length-1)
+					return false;
+			}
+		}
+		return true;
 	}
 	
 	public HashMap<String, Float> getEmotionPercentage(HashMap<String, Integer> emotionMap){
@@ -105,14 +144,14 @@ public class BasicEmotionAnalyzer {
 	}
 	
 	public static void main(String[] args) {
-		BasicEmotionAnalyzer analyzer = new BasicEmotionAnalyzer();
+		MultiWordEmotionAnalyzer analyzer = new MultiWordEmotionAnalyzer();
 		
 		HashMap<String, HashMap<String, Integer>> allArticleActualMood = new HashMap<String, HashMap<String, Integer>>();
 		HashMap<String, HashMap<String, Float>> allArticlePredictMood = new HashMap<String, HashMap<String, Float>>();
 		
 		HashMap<String, Integer> actual;
 		HashMap<String, Float> predict;
-		int count = 45;
+		int count = 1;
 		
 		for(int i = 81000; count > 0; i++){
 			
@@ -122,6 +161,7 @@ public class BasicEmotionAnalyzer {
 			
 			if(f.exists() && !f.isDirectory()) { 
 
+				System.out.println("Start analyze");
 				HashMap<String, Integer> emoFreq = analyzer.computeEmotionFreq(filepath);
 				
 				predict = analyzer.getEmotionPercentage(emoFreq);
@@ -138,7 +178,6 @@ public class BasicEmotionAnalyzer {
 //				FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
 //				
 				System.out.println("analyzed: " + i);
-				
 				
 				count--;
 			}

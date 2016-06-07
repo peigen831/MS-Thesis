@@ -54,7 +54,7 @@ public class ConceptLoader {
 	}
 	
 	//Add another function for multiple words
-	public String[] getRecalculateSenticValue(String word){
+	public String[] getBasicSenticValue(String word){
 		String[] result = null;
 		BasicSenticCalculator calcu = new BasicSenticCalculator();
 		
@@ -69,6 +69,19 @@ public class ConceptLoader {
 				break;
 			}
 		}
+		return result;
+	}
+	
+	public String[] getBasicSenticValue(Concept concept){
+		String[] result = null;
+		BasicSenticCalculator calcu = new BasicSenticCalculator();
+		
+		result = new String[4];
+		result[0] = calcu.computePleasantness(concept.getPleasantness());
+		result[1] = calcu.computeAttention(concept.getAttention());
+		result[2] = calcu.computeSensitivity(concept.getSensitivity());
+		result[3] = calcu.computeAptitude(concept.getAptitude());
+		
 		return result;
 	}
 	

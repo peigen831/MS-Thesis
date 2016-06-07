@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.jena.query.ResultSet;
+
 import Sentic.Concept;
 import Sentic.ConceptLoader;
 import edu.stanford.nlp.ling.CoreLabel;
@@ -45,10 +47,21 @@ public class SenticConceptPattern {
 		    GrammaticalStructure gs = gsf.newGrammaticalStructure(parse);
 		    List<TypedDependency> tdl = gs.typedDependenciesCCprocessed();
 		    String s = "";
-		    for(TypedDependency td : tdl)
-		    {
-		    	s += td.reln()+" ";
+		    
+		    for(TypedDependency td: tdl){
+		    	s += td.reln() + " ";
 		    }
+		    
+//		    for(TypedDependency td : tdl)
+//		    {
+//		    	if(td.gov().toString().equals("ROOT"))
+//		    		s += td.gov().toString()+" ";
+//		    	else
+//		    	{
+//		    		String a = td.gov().toString().split("/")[1];
+//		    		s +=  a + " ";
+//		    	}
+//		    }
 
 //		    TreePrint tp = new TreePrint("typedDependenciesCollapsed");
 //		    tp.printTree(parse);
@@ -91,5 +104,6 @@ public class SenticConceptPattern {
 		for(String s: uniqRelation){
 			System.out.println(s);	
 		}
+		System.out.println("Size: "+uniqRelation.size());
 	}
 }
