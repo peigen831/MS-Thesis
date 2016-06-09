@@ -1,11 +1,16 @@
 package helper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import Sentic.Concept;
-import Sentic.MoodConstant;
 import crawler.HTMLInterpreter;
 
 public class DataFormat {
@@ -88,7 +93,8 @@ public class DataFormat {
 				Float dif = Math.abs(predictVal-actualVal);
 				
 				String tmp = articleID + ", " + actualVal + ", " + predictVal + "," + dif + "\n";
-				String s;
+				System.out.println(tmp);
+				String s ="";
 				switch(mood){
 					case HTMLInterpreter.mood_inspired:  
 						s = result.get(HTMLInterpreter.mood_afraid);
@@ -136,6 +142,82 @@ public class DataFormat {
 		}
 		return result;
 	}
+	
+	public String generateRankBasedResult(HashMap<String, Integer> actual, HashMap<String, Float> predict){
+		
+		Map<String, Integer> sortedActual = sortMapByInteger(actual);
+		Map<String, Float> sortedPredict = sortMapByFloat(predict);
+		
+		String sActualKey = "";
+		String sActualValue = "";
+		for(Entry<String, Integer> entry: sortedActual.entrySet()){
+			sActualKey += entry.getKey() + ",";
+			sActualValue += entry.getValue() + ",";
+		}
+		
+		String sPredictKey = "";
+		String sPredictValue = "";
+		for(Entry<String, Float> entry: sortedPredict.entrySet()){
+			sPredictKey += entry.getKey() + ",";
+			sPredictValue += entry.getValue() + ",";
+		}
+		
+		String result = sActualKey + "\n"
+				+ sActualValue + "\n"
+				+ sPredictKey + "\n"
+				+ sPredictValue;
+		
+		
+		return result;
+	}
+	
+	public Map<String, Integer> sortMapByInteger(HashMap<String, Integer> emoMap){
+		List<Entry<String, Integer>> list = new LinkedList<Entry<String, Integer>>(emoMap.entrySet());
+
+        // Sorting the list based on values
+        Collections.sort(list, new Comparator<Entry<String, Integer>>()
+        {
+            public int compare(Entry<String, Integer> o1,
+                    Entry<String, Integer> o2)
+            {
+                    return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+
+        // Maintaining insertion order with the help of LinkedList
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        for (Entry<String, Integer> entry : list)
+        {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+	}
+	
+	public Map<String, Float> sortMapByFloat(HashMap<String, Float> emoMap){
+		List<Entry<String, Float>> list = new LinkedList<Entry<String, Float>>(emoMap.entrySet());
+
+        // Sorting the list based on values
+        Collections.sort(list, new Comparator<Entry<String, Float>>()
+        {
+            public int compare(Entry<String, Float> o1,
+                    Entry<String, Float> o2)
+            {
+                    return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+
+        // Maintaining insertion order with the help of LinkedList
+        Map<String, Float> sortedMap = new LinkedHashMap<String, Float>();
+        for (Entry<String, Float> entry : list)
+        {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+	}
+	
+	
 	
 	public void printFloatMap(HashMap<String, Float> floatMap){
 		for(Entry<String, Float> entry: floatMap.entrySet())

@@ -73,14 +73,15 @@ public class SenticConceptPattern {
 	    return resultSet;
 	}
 	
-
+//TODO REMOVE OUT OF SCOPE
     public static String input(String prompt) {
         System.out.print(prompt);
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
         return line;
     }
-    
+
+//TODO REMOVE OUT OF SCOPE
     public static Set<String> tokens(String line) {
         String[] tokens = line.split(" ");
         Set<String> words = new HashSet<>();
@@ -96,7 +97,6 @@ public class SenticConceptPattern {
 		//store the result to hashset
 		//print hashset
 		ConceptLoader loader = new ConceptLoader();
-		loader.loadConcept();
 		Concept[] arrConcept = loader.getSenticConcept();
 		
 		Set<String> uniqRelation = new SenticConceptPattern().getPossibleRelation(arrConcept);

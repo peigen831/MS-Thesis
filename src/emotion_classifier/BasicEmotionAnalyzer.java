@@ -112,7 +112,7 @@ public class BasicEmotionAnalyzer {
 		
 		HashMap<String, Integer> actual;
 		HashMap<String, Float> predict;
-		int count = 45;
+		int count = 2;
 		
 		for(int i = 81000; count > 0; i++){
 			

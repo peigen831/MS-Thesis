@@ -27,6 +27,15 @@ public class ConceptLoader {
 	private String modelPath = "senticnet3.rdf.xml";
 	private Concept[] arrConcept = new Concept[30000];
 	
+	private static ConceptLoader instance = null;
+	
+	public static ConceptLoader getInstance(){
+		if(instance == null)
+			instance = new ConceptLoader();
+		return instance;
+	}
+	
+	
 	public void setModelPath(String path){
 		modelPath = path;
 	}
@@ -185,7 +194,6 @@ public class ConceptLoader {
 
 	public static void main(String args[]){
 		ConceptLoader model = new ConceptLoader();
-		model.loadConcept();
 		model.printAll();
 	}
 }

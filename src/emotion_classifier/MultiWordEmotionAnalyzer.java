@@ -2,6 +2,7 @@ package emotion_classifier;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Map.Entry;
 import Sentic.Concept;
 import Sentic.ConceptLoader;
 import Sentic.MoodConstant;
+import crawler.HTMLInterpreter;
 import dataprocessor.DataInterpreter;
 import dataprocessor.Lemmatizer;
 import dataprocessor.SentenceSplitter;
@@ -21,10 +23,7 @@ import helper.FileIO;
 public class MultiWordEmotionAnalyzer {
 	
 	private SentenceSplitter splitter = new SentenceSplitter();
-	
-	private ConceptLoader loader = new ConceptLoader();
-	
-	Concept[] senticConcept;
+		
 	
 	public static void buildOneString(String[] body){
 		String wholeArticle = "";
@@ -37,7 +36,7 @@ public class MultiWordEmotionAnalyzer {
 		System.out.println(wholeArticle);
 	}
 	
-	public HashMap<String, Integer> computeEmotionFreq(String filepath){
+	public HashMap<String, Integer> computeEmotionFrequency(String filepath){
 
 		HashMap<String, Integer>  emoMap;
 		String linedText = FileIO.getInstance().readText(filepath);
@@ -61,16 +60,14 @@ public class MultiWordEmotionAnalyzer {
 			
 			for(String sSentence: sentenceSplitted)
 			{
-				Lemmatizer l = Lemmatizer.getInstance();
-				ArrayList<String> lemmatizeSentence = l.lemmatize(sSentence);
+				ArrayList<String> lemmatizeSentence =  Lemmatizer.getInstance().lemmatize(sSentence);
 				
 				existConcept.addAll(getExistConcept(lemmatizeSentence.toArray(new String[lemmatizeSentence.size()])));
-				System.out.println("Done: " + lemmatizeSentence);
 			}
 		}
 		
 		for(Concept c: existConcept){
-			String[] emotionVals = loader.getBasicSenticValue(c);
+			String[] emotionVals = ConceptLoader.getInstance().getBasicSenticValue(c);
 			
 			for(String emotion: emotionVals){
 				int count = emoMap.containsKey(emotion) ? emoMap.get(emotion) : 0;
@@ -82,15 +79,15 @@ public class MultiWordEmotionAnalyzer {
 	
 	public HashSet<Concept> getExistConcept(String[] sSentence){
 
-		ConceptLoader loader = new ConceptLoader();
-		loader.loadConcept();
-		Concept[] arrConcept = loader.getSenticConcept();
+		Concept[] arrConcept = ConceptLoader.getInstance().getSenticConcept();
 		HashSet<Concept> result = new HashSet<Concept>();
 		
 		for(Concept concept: arrConcept)
 		{
-			if(hasConcept(concept.getConcept().toLowerCase(), sSentence));
+			if(hasConcept(concept.getConcept().toLowerCase(), sSentence)){
+//				System.out.println(concept.getConcept() + Arrays.toString(sSentence));
 				result.add(concept);
+			}
 		}
 		return result;
 	}
@@ -143,57 +140,136 @@ public class MultiWordEmotionAnalyzer {
 		
 	}
 	
-	public static void main(String[] args) {
+	public int getTop3MatchIndex(HashMap<String, Integer> actual, HashMap<String, Float> predict){
+		
+		Map<String, Integer> sortedActual = DataFormat.getInstance().sortMapByInteger(actual);
+		Map<String, Float> sortedPredict = DataFormat.getInstance().sortMapByFloat(predict);
+		
+		int count = 0;
+		
+		int i = 0;
+		for(Entry<String, Integer> entryA: sortedActual.entrySet()){
+			if(i == 3)
+				break;
+			if(entryA.getKey().equals(HTMLInterpreter.mood_inspired))
+				continue;
+
+			int j = 0;
+			for(Entry<String, Float> entryP: sortedPredict.entrySet()){
+				if(j == 3)
+					break;
+				
+				if(entryA.getKey().equals(entryP.getKey()))
+				{
+					count++;
+//					System.out.println(entryA.getKey() +" " +entryP.getKey());
+				}
+				j++;
+			}
+			i++;
+		}
+		
+		return count;
+	}
+	
+	public static void main(String[] args){
 		MultiWordEmotionAnalyzer analyzer = new MultiWordEmotionAnalyzer();
 		
-		HashMap<String, HashMap<String, Integer>> allArticleActualMood = new HashMap<String, HashMap<String, Integer>>();
-		HashMap<String, HashMap<String, Float>> allArticlePredictMood = new HashMap<String, HashMap<String, Float>>();
+		int count = 45;
 		
-		HashMap<String, Integer> actual;
-		HashMap<String, Float> predict;
-		int count = 1;
-		
+		String sWrite = "";
+		int[] nTopMatch = {0 ,0 , 0, 0}; 
 		for(int i = 81000; count > 0; i++){
-			
-			String filepath = FileIO.dirProcessed + i;
-			
+			String filepath = FileIO.dirProcessed +i;
 			File f = new File(filepath);
 			
 			if(f.exists() && !f.isDirectory()) { 
-
 				System.out.println("Start analyze");
-				HashMap<String, Integer> emoFreq = analyzer.computeEmotionFreq(filepath);
+				HashMap<String, Integer> emoFreq = analyzer.computeEmotionFrequency(filepath);
 				
-				predict = analyzer.getEmotionPercentage(emoFreq);
+				HashMap<String, Float> predict = analyzer.getEmotionPercentage(emoFreq);
+
+				HashMap<String, Integer> actual = analyzer.getActualMood(filepath);
 				
-				actual = analyzer.getActualMood(filepath);
+//				DataFormat.getInstance().printFloatMap(predict);
+				int index = analyzer.getTop3MatchIndex(actual, predict);
 				
-				String foundArticle = Integer.toString(i);
+				nTopMatch[index]++;
 				
-				allArticleActualMood.put(foundArticle, actual);
-				allArticlePredictMood.put(foundArticle, predict);
+				System.out.println(Arrays.toString(nTopMatch));
 				
-//				String sWrite = DataFormat.getInstance().generateMoodComparisonString(actual, predict);
-//				
-//				FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
-//				
+				sWrite += i + "\n"+ DataFormat.getInstance().generateRankBasedResult(actual, predict)+ "\n\n";
+				
 				System.out.println("analyzed: " + i);
 				
 				count--;
 			}
 		}
-		System.out.println("writing");
 		
-		HashMap<String, String> moodMap = DataFormat.getInstance().generateMoodBasedResult(allArticleActualMood, allArticlePredictMood);
-				
-		for(Entry<String, String> mood: moodMap.entrySet())
-		{
-			String sWrite = mood.getValue();
-			System.out.println(sWrite);
-			
-			FileIO.getInstance().writeFile(FileIO.dirResult + mood.getKey()+ ".CSV", sWrite);
-			
-			System.out.println("Done write: " + mood.getKey());
+		String tmp1 = "";
+		String tmp2 = "";
+		for(int i = 3; i >=0; i--){
+			tmp1 += "top " + i + " match ,";
+			tmp2 += nTopMatch[i] + ", ";
 		}
+		System.out.println("To write :" +Arrays.toString(nTopMatch));
+		
+		sWrite = tmp1 + "\n" + tmp2 + "\n" + sWrite;
+		
+		FileIO.getInstance().writeFile(FileIO.dirResult + "top3.CSV", sWrite);
 	}
+	
+//	public static void main(String[] args) {
+//		MultiWordEmotionAnalyzer analyzer = new MultiWordEmotionAnalyzer();
+//		
+//		HashMap<String, HashMap<String, Integer>> articlesActualMoodMap = new HashMap<String, HashMap<String, Integer>>();
+//		HashMap<String, HashMap<String, Float>> articlesPredictMoodMap = new HashMap<String, HashMap<String, Float>>();
+//		
+//		int count =45;
+//		
+//		for(int i = 81000; count > 0; i++){
+//			
+//			String filepath = FileIO.dirProcessed + i;
+//			
+//			File f = new File(filepath);
+//			
+//			if(f.exists() && !f.isDirectory()) { 
+//
+//				System.out.println("Start analyze");
+//				HashMap<String, Integer> emoFreq = analyzer.computeEmotionFrequency(filepath);
+//				
+//				HashMap<String, Float> predict = analyzer.getEmotionPercentage(emoFreq);
+//				
+////				DataFormat.getInstance().printFloatMap(predict);
+//					
+//				HashMap<String, Integer> actual = analyzer.getActualMood(filepath);
+//				
+//				String foundArticle = Integer.toString(i);
+//				
+//				articlesActualMoodMap.put(foundArticle, actual);
+//				articlesPredictMoodMap.put(foundArticle, predict);
+//				
+////				String sWrite = DataFormat.getInstance().generateMoodComparisonString(actual, predict);
+//				
+////				FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
+//				
+//				System.out.println("analyzed: " + i);
+//				
+//				count--;
+//			}
+//		}
+//		System.out.println("writing");
+//		
+//		HashMap<String, String> moodMap = DataFormat.getInstance().generateMoodBasedResult(articlesActualMoodMap, articlesPredictMoodMap);
+//				
+//		for(Entry<String, String> mood: moodMap.entrySet())
+//		{
+//			String sWrite = mood.getValue();
+//			System.out.println(sWrite);
+//			
+//			FileIO.getInstance().writeFile(FileIO.dirResult + mood.getKey()+ ".CSV", sWrite);
+//			
+//			System.out.println("Done write: " + mood.getKey());
+//		}
+//	}
 }
