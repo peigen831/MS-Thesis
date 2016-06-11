@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import Sentic.Concept;
-import Sentic.ConceptLoader;
-import Sentic.SenticConstant;
 import dataprocessor.DataInterpreter;
 import dataprocessor.Lemmatizer;
 import dataprocessor.SentenceSplitter;
 import helper.DataFormat;
 import helper.FileIO;
+import sectic.Concept;
+import sectic.ConceptLoader;
+import sectic.SenticConstant;
 
 public class EmotionAnalyzer {
 	
@@ -39,7 +39,7 @@ public class EmotionAnalyzer {
 		
 		ArrayList<String> sentence = new ArrayList<String>();
 
-		senticConcept = new ConceptLoader().getSenticConcept();
+		senticConcept = new ConceptLoader().getConcept();
 		
 		System.out.println("sentic size: " + senticConcept.length);
 		int match = 0;
@@ -160,7 +160,7 @@ public class EmotionAnalyzer {
 		
 		ArrayList<String> sentence = new ArrayList<String>();
 
-		senticConcept = new ConceptLoader().getSenticConcept();
+		senticConcept = new ConceptLoader().getConcept();
 		
 		for(String s1: paragraph)
 		{

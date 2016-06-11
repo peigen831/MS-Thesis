@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import Sentic.Concept;
-import Sentic.ConceptLoader;
-import Sentic.MoodConstant;
 import dataprocessor.DataInterpreter;
 import dataprocessor.Lemmatizer;
 import dataprocessor.SentenceSplitter;
 import helper.DataFormat;
 import helper.FileIO;
+import sectic.Concept;
+import sectic.ConceptLoader;
+import sectic.MoodConstant;
 
 public class BasicEmotionAnalyzer {
 	

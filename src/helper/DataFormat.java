@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import Sentic.Concept;
 import crawler.HTMLInterpreter;
+import sectic.Concept;
 
 public class DataFormat {
 	

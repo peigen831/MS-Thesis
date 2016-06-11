@@ -9,8 +9,6 @@ import java.util.Set;
 
 import org.apache.jena.query.ResultSet;
 
-import Sentic.Concept;
-import Sentic.ConceptLoader;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.process.CoreLabelTokenFactory;
@@ -22,6 +20,8 @@ import edu.stanford.nlp.trees.GrammaticalStructureFactory;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreebankLanguagePack;
 import edu.stanford.nlp.trees.TypedDependency;
+import sectic.Concept;
+import sectic.ConceptLoader;
 
 public class SenticConceptPattern {
 	
@@ -97,7 +97,7 @@ public class SenticConceptPattern {
 		//store the result to hashset
 		//print hashset
 		ConceptLoader loader = new ConceptLoader();
-		Concept[] arrConcept = loader.getSenticConcept();
+		Concept[] arrConcept = loader.getConcept();
 		
 		Set<String> uniqRelation = new SenticConceptPattern().getPossibleRelation(arrConcept);
 		
