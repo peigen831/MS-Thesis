@@ -7,9 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import crawler.HTMLInterpreter;
 import dataprocessor.DataInterpreter;
 import dataprocessor.Lemmatizer;
 import dataprocessor.SentenceSplitter;
@@ -128,42 +126,11 @@ public class SenticEmotionAnalyzer {
 		
 	}
 	
-	public int getTop3MatchIndex(HashMap<String, Integer> actual, HashMap<String, Float> predict){
-		
-		Map<String, Integer> sortedActual = DataFormat.getInstance().sortMapByInteger(actual);
-		Map<String, Float> sortedPredict = DataFormat.getInstance().sortMapByFloat(predict);
-		
-		int count = 0;
-		
-		int i = 0;
-		for(Entry<String, Integer> entryA: sortedActual.entrySet()){
-			if(i == 3)
-				break;
-			if(entryA.getKey().equals(HTMLInterpreter.mood_inspired))
-				continue;
-
-			int j = 0;
-			for(Entry<String, Float> entryP: sortedPredict.entrySet()){
-				if(j == 3)
-					break;
-				
-				if(entryA.getKey().equals(entryP.getKey()))
-				{
-					count++;
-//					System.out.println(entryA.getKey() +" " +entryP.getKey());
-				}
-				j++;
-			}
-			i++;
-		}
-		
-		return count;
-	}
-	
 	
 	public static void main(String[] args){
 		
 		SenticEmotionAnalyzer analyzer = new SenticEmotionAnalyzer();
+		ResultRanker ranker = new ResultRanker();
 		
 		int count = 45;
 		
@@ -182,7 +149,7 @@ public class SenticEmotionAnalyzer {
 				HashMap<String, Integer> actual = analyzer.getActualMood(filepath);
 				
 //				DataFormat.getInstance().printFloatMap(predict);
-				int index = analyzer.getTop3MatchIndex(actual, predict);
+				int index = ranker.getTopNMatch(actual, predict,3);
 				
 				nTopMatch[index]++;
 				
@@ -206,6 +173,6 @@ public class SenticEmotionAnalyzer {
 		
 		sWrite = tmp1 + "\n" + tmp2 + "\n" + sWrite;
 		
-		FileIO.getInstance().writeFile(FileIO.dirResult + "top3.CSV", sWrite);
+		FileIO.getInstance().writeFile(FileIO.dirResult + "top3-ValSpecificWithInspired.CSV", sWrite);
 	}
 }

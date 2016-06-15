@@ -56,7 +56,7 @@ public class ConceptLoader {
 	//Add another function for multiple words
 	public String[] getBasicSenticValue(String word){
 		String[] result = null;
-		BasicSenticCalculator calcu = new BasicSenticCalculator();
+		RangeSpecificCalculator_noInspired calcu = new RangeSpecificCalculator_noInspired();
 		
 		for(Concept c: arrConcept){
 			if(word.equals(c.getConcept()))
@@ -74,7 +74,9 @@ public class ConceptLoader {
 	
 	public String[] getBasicSenticValue(Concept concept){
 		String[] result = null;
-		BasicSenticCalculator calcu = new BasicSenticCalculator();
+//		RangeSpecificCalculator_noInspired calcu = new RangeSpecificCalculator_noInspired();
+//		RangeSpecificCalculator_withInspired calcu = new RangeSpecificCalculator_withInspired();
+		ValueSpecificCalculator calcu = new ValueSpecificCalculator();
 		
 		result = new String[4];
 		result[0] = calcu.computePleasantness(concept.getPleasantness());
