@@ -35,8 +35,7 @@ public class SenticEmotionAnalyzer {
 		return emoMap;
 	}
 	
-	public HashMap<String, Integer> SenticApproach(String[] body){
-		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
+	public ArrayList<String> getAllExistConcept(String[] body){
 		
 		ArrayList<String> existConceptString = new ArrayList<String>();
 		
@@ -48,9 +47,9 @@ public class SenticEmotionAnalyzer {
 			
 			for(String sSentence: sentenceSplitted)
 			{
-				ArrayList<String> lemmatizeSentence =  Lemmatizer.getInstance().lemmatize(sSentence);
-				
-				sSentence = rebuildSentence(lemmatizeSentence);
+//				ArrayList<String> lemmatizeSentence =  Lemmatizer.getInstance().lemmatize(sSentence);
+//				
+//				sSentence = rebuildSentence(lemmatizeSentence);
 				
 				try {
 					existConceptString.addAll(parser.get_concepts(sSentence));
@@ -60,8 +59,15 @@ public class SenticEmotionAnalyzer {
 				}
 			}
 		}
+		return existConceptString;
+	}
+	
+	public HashMap<String, Integer> SenticApproach(String[] body){
+		HashMap<String, Integer>  emoMap = new HashMap<String, Integer>();
 		
-		HashSet<Concept> existConcept = getConceptOfString(existConceptString);
+		ArrayList<String> existConceptString = getAllExistConcept(body);
+		
+		HashSet<Concept> existConcept = getConceptFromString(existConceptString);
 		
 		for(Concept c: existConcept){
 			String[] emotionVals = conceptLoader.getBasicSenticValue(c);
@@ -74,7 +80,7 @@ public class SenticEmotionAnalyzer {
 		return emoMap;
 	}
 	
-	public HashSet<Concept> getConceptOfString(ArrayList<String> conceptString){
+	public HashSet<Concept> getConceptFromString(ArrayList<String> conceptString){
 		HashSet<Concept> result = new HashSet<Concept>();
 		for(String s: conceptString){
 			for(Concept c: conceptLoader.getConcept()){
@@ -132,7 +138,7 @@ public class SenticEmotionAnalyzer {
 		SenticEmotionAnalyzer analyzer = new SenticEmotionAnalyzer();
 		ResultRanker ranker = new ResultRanker();
 		
-		int count = 45;
+		int count = 10;
 		
 		String sWrite = "";
 		int[] nTopMatch = {0 ,0 , 0, 0}; 

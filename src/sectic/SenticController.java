@@ -18,15 +18,17 @@ public class SenticController {
 		for(int i = 81000; i < 81050; i++){
 
 			String linedText = FileIO.getInstance().readText(FileIO.dirProcessed + i);
-			
-			String[] paragraph = DataInterpreter.getInstance().getParagraph(linedText);
-			
-			HashMap<String, ArrayList<Concept>> map = analyzer.getDimensionConcept(paragraph);
-			
-			String sWrite = DataFormat.getInstance().generateConceptCSVString(map);
-			
-			FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
-			System.out.println("Done " + i);
+			if(linedText != null){
+
+				String[] paragraph = DataInterpreter.getInstance().getParagraph(linedText);
+				
+				HashMap<String, ArrayList<Concept>> map = analyzer.getDimensionConcept(paragraph);
+				
+				String sWrite = DataFormat.getInstance().generateConceptCSVString(map);
+				
+				FileIO.getInstance().writeFile(FileIO.dirResult + Integer.toString(i)+ ".CSV", sWrite);
+				System.out.println("Done " + i);
+			}
 		}
 		System.out.println(FileIO.getInstance().readText(FileIO.dirProcessed + 1000));
 		

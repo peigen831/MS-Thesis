@@ -18,6 +18,14 @@ public class HTMLInterpreter {
 	public final static String mood_afraid = "afraid";
 	public final static String mood_annoyed = "annoyed";
 	
+	
+	public String[] getTags(Document doc){
+		
+		String element = doc.select("meta[name=news_keywords]").first().attr("content");
+		
+		return element.split(", ");
+	}
+	
 	public ArrayList<String> getBody(Document doc){
 		ArrayList<String> arrParagraph = new ArrayList<String>();
 		
