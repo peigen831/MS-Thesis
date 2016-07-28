@@ -24,6 +24,7 @@ public class DataFormat {
 	}
 	
 	
+	
 	public String generateConceptCSVString(HashMap<String, ArrayList<Concept>> map){
 		
 		String result = "";
