@@ -7,7 +7,7 @@ import org.jsoup.nodes.Document;
 
 import helper.FileIO;
 
-public class Main {
+public class LocalDriver {
 	public static void main(String args[]){
 		FileIO io = new FileIO ();
 		

@@ -13,5 +13,7 @@
 	<classpathentry kind="lib" path="lib/test"/>
 	<classpathentry kind="lib" path="C:/Users/USER/Desktop/Thesis/API/concept-parser/lucene-snowball-3.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/USER/Desktop/Thesis/API/opennlp-tools-1.5.0/opennlp-tools-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/weka/weka-src.jar"/>
+	<classpathentry kind="lib" path="lib/weka/weka.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

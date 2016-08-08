@@ -16,14 +16,6 @@ public class DataInterpreter {
 			instance = new DataInterpreter();
 		return instance;
 	}
-	
-	public DataInterpreter(String rawText){
-		this.rawText = rawText;
-	}
-	
-	public DataInterpreter(){
-		
-	}
 
 	public void setRawText(String rawText){
 		this.rawText = rawText;
@@ -69,6 +61,12 @@ public class DataInterpreter {
 		}
 		return result;
 	}
+	
+	public String getBody(String text){
+		this.rawText =  text;
+		return getBody();
+	}
+	
 	
 	public String intMapAsString(HashMap<String, Integer> map){
 		TreeMap<String, Integer> tMap = new TreeMap<String, Integer>(map);

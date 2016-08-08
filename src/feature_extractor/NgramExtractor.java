@@ -37,9 +37,11 @@ public class NgramExtractor {
     public static void main(String args[]){
     	NgramExtractor n = new NgramExtractor();
     	String a = "ThiS Is my car! Not,    yours.";
-    	String b = "i have to go to 7-11. And his birthday is Aug 20,1997";
+    	String b = "CONTRASTING SPEECHES? Pope Francis stands next to Philippine president Benigno Aquino III during arrival honors at Malacanang presidential palace, Manila, Philippines, 16 January 2015. The two later delivered separate speeches tackling issues affecting Philippine society. Photo by Dennis M. Sabangan/EPA"
++ "\n\n MANILA, Philippines (UPDATED) – Ouch, that hurt. Of all the topics Pope Francis touched on in his Malacañang speech – from Super Typhoon Yolanda (Haiyan) to migration and indigenous peoples – one comment drew the most praise from Twitter-savvy Filipinos. I hope that this prophetic summons will challenge everyone, at all levels of society, to reject every form of corruption which diverts resources from the poor,” the Pope said before an audience that included the country’s top politicians."
++ "The pontiff’s remark in his first ever speech in the Philippines on Friday, January 16, hit a nerve for Filipino Twitter users, with the message resonating in a country outraged by corruption scandals at the highest levels. The Pope made the comment as he stressed the importance of social justice, criticizing what he called the “glaring and indeed scandalous, social inequalities.” Watch his whole speech below.";
     	
-    	System.out.println(n.ngrams(3, a+b));
+    	System.out.println(n.ngrams(3, b));
     	
     }
 }
