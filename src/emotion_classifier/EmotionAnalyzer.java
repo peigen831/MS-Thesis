@@ -195,7 +195,7 @@ public class EmotionAnalyzer {
 		
 		HashMap<String, ArrayList<Concept>> map = e.getDimensionConcept(sTest);
 
-		DataFormat.getInstance().printMap(map);
+		DataFormat.getInstance().printConceptMap(map);
 		
 	}
 }

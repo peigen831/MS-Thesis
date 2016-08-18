@@ -1,24 +1,35 @@
 package feature_extractor;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-import crawler.HTMLInterpreter;
 import dataprocessor.DataInterpreter;
 import helper.FileIO;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.Instance;
 import weka.core.Instances;
 
 public class ArffBuilder {
 	
-    ArrayList<Attribute> atts;
-    ArrayList<String> classVal;
-    Instances arffInstance;
-    ArrayList<String> arrMood;
+	public final static String mood_happy = "mood_happy";
+	public final static String mood_sad = "mood_sad";
+	public final static String mood_inspired = "mood_inspired";
+	public final static String mood_dontcare = "mood_dont_care";
+	public final static String mood_angry = "mood_angry";
+	public final static String mood_amused = "mood_amused";
+	public final static String mood_afraid = "mood_afraid";
+	public final static String mood_annoyed = "mood_annoyed";
+	
+	
+    private ArrayList<Attribute> atts;
+    private ArrayList<String> classVal;
+    private Instances arffInstance;
+    private ArrayList<String> emoOrder;
+    private int emotionThreshold = 33;
     
     public void initialize(){
     	atts = new ArrayList<Attribute>();
@@ -29,20 +40,20 @@ public class ArffBuilder {
     }
     
     public void orderMood(){
-    	arrMood = new ArrayList<String>();
-    	arrMood.add(HTMLInterpreter.mood_happy);
-    	arrMood.add(HTMLInterpreter.mood_sad);
-    	arrMood.add(HTMLInterpreter.mood_inspired);
-    	arrMood.add(HTMLInterpreter.mood_dontcare);
-    	arrMood.add(HTMLInterpreter.mood_angry);
-    	arrMood.add(HTMLInterpreter.mood_afraid);
-    	arrMood.add(HTMLInterpreter.mood_amused);
-    	arrMood.add(HTMLInterpreter.mood_annoyed);
+    	emoOrder = new ArrayList<String>();
+    	emoOrder.add(mood_happy);
+    	emoOrder.add(mood_sad);
+    	emoOrder.add(mood_inspired);
+    	emoOrder.add(mood_dontcare);
+    	emoOrder.add(mood_angry);
+    	emoOrder.add(mood_afraid);
+    	emoOrder.add(mood_amused);
+    	emoOrder.add(mood_annoyed);
     }
     
     public void addClassFeature(String relationName){
     	
-    	for(String s: arrMood){
+    	for(String s: emoOrder){
     		Attribute tmp =  new Attribute(s, classVal);
     		atts.add(tmp);
     	}
@@ -60,7 +71,7 @@ public class ArffBuilder {
          arffInstance = new Instances(relationName, atts, 0);
     }
     
-    public void addNewInstance(List<String> nGram){
+    public void addArticleInstance(List<String> nGram){
     	double[] instanceVal = new double[arffInstance.numAttributes()];
     	
     	for(int i = 0; i < atts.size(); i++)
@@ -74,8 +85,32 @@ public class ArffBuilder {
     	arffInstance.add(new DenseInstance(1.0, instanceVal));
     }
     
+    public List<String> getMultiEmotion(HashMap<String, Integer> emoMap){
+    	List<String> emotion = new ArrayList<String>();
+    	
+    	for(String s: emoOrder){
+    		if(emoMap.get(s.substring(5)) >= emotionThreshold){
+    			emotion.add(s);
+    		}
+    	}
+    	return emotion;
+    }
+    
     public void printData(){
     	System.out.println(arffInstance);
+    }
+    
+    public void writeArff(){
+    	 try {
+
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(FileIO.dirProcessed + "/rappler.arff"));
+			writer.write(arffInstance.toString());
+	    	writer.flush();
+	    	writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 	
 	public static void main(String args[]){
@@ -86,8 +121,8 @@ public class ArffBuilder {
 		ArffBuilder builder = new ArffBuilder();
 		builder.initialize();
 		
-		int start = 0;
-		int end = 4;
+		int start = 81000;
+		int end = 81050;
 		
 		String relationName = "Bigram Rappler News";
 		
@@ -95,34 +130,38 @@ public class ArffBuilder {
 
 			String rawText = FileIO.getInstance().readText(FileIO.dirProcessed + i);
 			
-			String sBody = DataInterpreter.getInstance().getBody(rawText);
 			
 			
-			if(sBody != null){
+			if(rawText != null){
+
+				String sBody = DataInterpreter.getInstance().getBody(rawText);
 				List<String> bigram = featureExtractor.ngrams(2, sBody);
 				
 				builder.addNewFeature(bigram, relationName);
 			}
 		}
 
-		//TODO add class label
 		builder.addClassFeature(relationName);
-		
-		
+
 		for(int i = start; i < end; i++){
 			String rawText = FileIO.getInstance().readText(FileIO.dirProcessed + i);
 			
-			String sBody = DataInterpreter.getInstance().getBody(rawText);
-
-			HashMap<String, Integer> moodMap = DataInterpreter.getInstance().getMood();
-			
+		
 			if(rawText != null){
-				List<String> bigram = featureExtractor.ngrams(2, rawText);
+
+				String sBody = DataInterpreter.getInstance().getBody(rawText);
+
+				HashMap<String, Integer> emoMap = DataInterpreter.getInstance().getMood();
 				
-				builder.addNewInstance(bigram);
+				List<String> bigram = featureExtractor.ngrams(2, sBody);
+				
+				System.out.println(bigram.get(0));
+				bigram.addAll(builder.getMultiEmotion(emoMap));
+				
+				builder.addArticleInstance(bigram);
 			}	
 		}
-		
+		builder.writeArff();
 		builder.printData();
 		
 	}

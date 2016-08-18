@@ -231,7 +231,7 @@ public class DataFormat {
 		 }
 	}
 	
-	public void printMap(HashMap<String, ArrayList<Concept>> emoMap){
+	public void printConceptMap(HashMap<String, ArrayList<Concept>> emoMap){
 		 ArrayList<Concept> arr;
 		 
 		 for(Entry<String, ArrayList<Concept>> entry: emoMap.entrySet())
@@ -245,5 +245,12 @@ public class DataFormat {
 			 for(Concept c: arr)
 				 System.out.println(c.getConcept() + " " + c.getfrequency());
 		 }
+	}
+	
+	public void printIntMap(HashMap<String, Integer> map){
+		for(Entry<String, Integer> e: map.entrySet())
+		{
+			System.out.println(e.getKey() + ":" + e.getValue());
+		}
 	}
 }
